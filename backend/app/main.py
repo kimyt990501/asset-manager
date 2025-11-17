@@ -13,7 +13,7 @@ app = FastAPI(
 # CORS 설정 (Vue.js 프론트엔드 연결용)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],  # Vue dev server
+    allow_origins=["http://localhost:3000", "http://localhost:3500", "http://localhost:5173"],  # Vue dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { transactionsAPI } from '../services/api'
-import type { Transaction, TransactionFormData } from '../types'
-import { useAccountStore } from './accountStore'
+import { transactionsAPI } from '@/services/api'
+import type { Transaction, TransactionFormData } from '@/types'
+import { useAccountStore } from '@/stores/accountStore'
+
 
 export const useTransactionStore = defineStore('transaction', () => {
   const transactions = ref<Transaction[]>([])

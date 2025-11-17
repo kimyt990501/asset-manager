@@ -1,11 +1,11 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="transaction-form">
+  <form @submit.prevent="handleSubmit" class="recurring-form">
     <div class="form-group">
       <label for="account_id">계좌 *</label>
       <select id="account_id" v-model.number="formData.account_id" required>
         <option :value="0" disabled>계좌를 선택하세요</option>
         <option v-for="account in accounts" :key="account.id" :value="account.id">
-          {{ account.name }} ({{ formatCurrency(account.balance) }})
+          {{ account.name }}
         </option>
       </select>
     </div>
@@ -41,12 +41,43 @@
     </div>
 
     <div class="form-group">
-      <label for="transaction_date">날짜 *</label>
+      <label for="frequency">주기 *</label>
+      <select id="frequency" v-model="formData.frequency" required>
+        <option value="monthly">매월</option>
+        <option value="weekly">매주</option>
+        <option value="yearly">매년</option>
+      </select>
+    </div>
+
+    <div v-if="formData.frequency === 'monthly'" class="form-group">
+      <label for="day_of_month">매월 몇 일? *</label>
       <input
-        id="transaction_date"
-        v-model="formData.transaction_date"
+        id="day_of_month"
+        v-model.number="formData.day_of_month"
+        type="number"
+        placeholder="1"
+        min="1"
+        max="31"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="start_date">시작일 *</label>
+      <input
+        id="start_date"
+        v-model="formData.start_date"
         type="date"
         required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="end_date">종료일 (선택)</label>
+      <input
+        id="end_date"
+        v-model="formData.end_date"
+        type="date"
       />
     </div>
 
@@ -56,7 +87,7 @@
         id="description"
         v-model="formData.description"
         rows="3"
-        placeholder="거래 메모를 입력하세요"
+        placeholder="메모를 입력하세요"
       ></textarea>
     </div>
 
@@ -73,10 +104,9 @@
 
 <script setup lang="ts">
 import { reactive, computed } from 'vue'
-import type { Account, TransactionFormData } from '@/types'
-import { CATEGORIES } from '@/utils/constants'
-import { useFormatter } from '@/composables/useFormatter'
-import Button from '@/components/common/Button.vue'
+import type { Account, RecurringFormData } from '../../types'
+import { CATEGORIES } from '../../utils/constants'
+import Button from '../common/Button.vue'
 
 interface Props {
   accounts: Account[]
@@ -88,19 +118,21 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  submit: [data: TransactionFormData]
+  submit: [data: RecurringFormData]
   cancel: []
 }>()
 
-const { formatCurrency } = useFormatter()
-
-const formData = reactive<TransactionFormData>({
+const formData = reactive<RecurringFormData>({
   account_id: 0,
   type: 'expense',
   category: '',
   amount: 0,
   description: '',
-  transaction_date: new Date().toISOString().split('T')[0]
+  frequency: 'monthly',
+  day_of_month: 1,
+  start_date: new Date().toISOString().split('T')[0],
+  end_date: undefined,
+  is_active: true
 })
 
 const availableCategories = computed(() => {
@@ -117,7 +149,7 @@ const handleSubmit = () => {
 </script>
 
 <style scoped>
-.transaction-form {
+.recurring-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { accountsAPI, summaryAPI } from '../services/api'
-import type { Account, Summary, AccountFormData } from '../types'
+import { accountsAPI, summaryAPI } from '@/services/api'
+import type { Account, Summary, AccountFormData } from '@/types'
 
 export const useAccountStore = defineStore('account', () => {
   // State
@@ -89,18 +89,15 @@ export const useAccountStore = defineStore('account', () => {
   }
 
   return {
-    // State
     accounts,
     summary,
     loading,
     error,
-    // Getters
     totalAssets,
     monthlyIncome,
     monthlyExpenses,
     netCashflow,
     getAccountById,
-    // Actions
     fetchAccounts,
     fetchSummary,
     createAccount,

@@ -1,4 +1,4 @@
-import { ACCOUNT_TYPE_LABELS, TRANSACTION_TYPE_LABELS } from '../utils/constants'
+import { ACCOUNT_TYPE_LABELS, TRANSACTION_TYPE_LABELS } from '@/utils/constants'
 
 export const useFormatter = () => {
   const formatCurrency = (amount: number): string => {

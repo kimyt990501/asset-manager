@@ -5,7 +5,14 @@
         <h3>{{ account.name }}</h3>
         <span class="account-type">{{ getAccountTypeLabel(account.type) }}</span>
       </div>
-      <button class="menu-btn" @click="$emit('edit', account)">⋮</button>
+      <div class="action-buttons">
+        <button class="action-btn" @click="$emit('edit', account)" title="수정">
+          ✏️
+        </button>
+        <button class="action-btn action-btn--delete" @click="$emit('delete', account)" title="삭제">
+          🗑️
+        </button>
+      </div>
     </div>
     
     <div class="account-balance">
@@ -21,9 +28,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Account } from '../../types'
-import { useFormatter } from '../../composables/useFormatter'
-import { ACCOUNT_TYPE_COLORS } from '../../utils/constants'
+import type { Account } from '@/types'
+import { useFormatter } from '@/composables/useFormatter'
+import { ACCOUNT_TYPE_COLORS } from '@/utils/constants'
+
 
 interface Props {
   account: Account
@@ -32,6 +40,7 @@ interface Props {
 const props = defineProps<Props>()
 const emit = defineEmits<{
   edit: [account: Account]
+  delete: [account: Account]
 }>()
 
 const { formatCurrency, formatShortDate, getAccountTypeLabel } = useFormatter()
@@ -76,19 +85,26 @@ const accountColor = computed(() => ACCOUNT_TYPE_COLORS[props.account.type] || '
   font-weight: 500;
 }
 
-.menu-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #95a5a6;
-  padding: 0;
-  width: 2rem;
-  height: 2rem;
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
 }
 
-.menu-btn:hover {
-  color: #7f8c8d;
+.action-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: transform 0.2s ease;
+}
+
+.action-btn:hover {
+  transform: scale(1.2);
+}
+
+.action-btn--delete:hover {
+  filter: brightness(0.8);
 }
 
 .account-balance {
