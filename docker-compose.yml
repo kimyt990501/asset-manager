@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: asset-manager-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: Asia/Seoul
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    ports:
+      - "3316:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d
+      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - asset-manager-network
+    command: 
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: asset-manager-backend
+    restart: always
+    ports:
+      - "8500:8500"
+    environment:
+      DATABASE_URL: mysql+pymysql://${DB_USER}:${DB_PASSWORD}@db:3306/${DB_NAME}?charset=utf8mb4
+    volumes:
+      - ./backend/app:/app/app
+    networks:
+      - asset-manager-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  asset-manager-network:
+    driver: bridge
