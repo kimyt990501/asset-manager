@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import { summaryAPI } from '@/services/api'
 
 interface SummaryState {
     totalAssets: number
@@ -33,10 +33,10 @@ export const useSummaryStore = defineStore('summary', {
             this.loading = true
             this.error = null
             try {
-                const response = await axios.get('/api/v1/summary/')
+                const response = await summaryAPI.getFullSummary()
                 const data = response.data
                 this.totalAssets = data.total_assets
-                this.monthlyFixedIncome = data.monthly_fixed_income
+                this.monthlyFixedIncome = data.monthly_income
                 this.monthlyFixedExpenses = data.monthly_fixed_expenses
                 this.netMonthlyCashflow = data.net_monthly_cashflow
             } catch (err) {
@@ -49,13 +49,11 @@ export const useSummaryStore = defineStore('summary', {
 
         async fetchTrend(months: number = 6) {
             try {
-                const response = await axios.get('/api/v1/summary/net-worth-trend', {
-                    params: { months }
-                })
+                const response = await summaryAPI.getNetWorthTrend(months)
                 this.netWorthTrend = response.data
             } catch (err) {
                 console.error('Failed to fetch trend:', err)
-                // Keep previous data or set empty on error? 
+                // Keep previous data or set empty on error?
                 // For now, just log error.
             }
         }

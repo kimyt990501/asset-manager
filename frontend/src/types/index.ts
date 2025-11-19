@@ -45,8 +45,10 @@ export interface RecurringTransaction {
 
 export interface Summary {
   total_assets: number
+  net_worth: number
   monthly_fixed_expenses: number
-  monthly_fixed_income: number
+  monthly_variable_expenses: number
+  monthly_income: number
   net_monthly_cashflow: number
   accounts: Account[]
 }

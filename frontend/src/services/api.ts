@@ -56,10 +56,12 @@ export const recurringAPI = {
 export const summaryAPI = {
   getFullSummary: () => api.get<Summary>('/summary/'),
   getTotalAssets: () => api.get<{ total_assets: number }>('/summary/total-assets'),
-  getMonthlyExpenses: () => 
+  getMonthlyExpenses: () =>
     api.get<{ monthly_fixed_expenses: number }>('/summary/monthly-expenses'),
-  getMonthlyIncome: () => 
-    api.get<{ monthly_fixed_income: number }>('/summary/monthly-income')
+  getMonthlyIncome: () =>
+    api.get<{ monthly_fixed_income: number }>('/summary/monthly-income'),
+  getNetWorthTrend: (months: number = 6) =>
+    api.get<{ labels: string[], data: number[] }>('/summary/net-worth-trend', { params: { months } })
 }
 
 export default api
