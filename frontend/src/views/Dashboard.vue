@@ -10,13 +10,6 @@
           <span>{{ currentDate }}</span>
           <i class="icon-chevron-down"></i>
         </div>
-        <!-- Toast Test Buttons - 개발용 -->
-        <div class="toast-test-buttons" style="display: flex; gap: 0.5rem; margin-left: 1rem;">
-          <button @click="testSuccess" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #10b981; background: #d1fae5; cursor: pointer;">✓</button>
-          <button @click="testError" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #ef4444; background: #fee2e2; cursor: pointer;">✕</button>
-          <button @click="testWarning" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #f59e0b; background: #fef3c7; cursor: pointer;">⚠</button>
-          <button @click="testInfo" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #6366f1; background: #e0e7ff; cursor: pointer;">ℹ</button>
-        </div>
       </div>
     </header>
 
@@ -85,7 +78,7 @@ import ChartSkeleton from '../components/ui/ChartSkeleton.vue'
 import SummaryCardSkeleton from '../components/summary/SummaryCardSkeleton.vue'
 
 const summaryStore = useSummaryStore()
-const { success, error, warning, info } = useNotification()
+const { error } = useNotification()
 const loading = ref(false)
 const { 
   totalAssets, 
@@ -128,12 +121,6 @@ const currentDate = computed(() => {
   const now = new Date()
   return `${now.getFullYear()}년 ${now.getMonth() + 1}월`
 })
-
-// Toast 테스트 함수들 (개발용)
-const testSuccess = () => success('계좌가 성공적으로 추가되었습니다!')
-const testError = () => error('계좌 추가에 실패했습니다. 다시 시도해주세요.')
-const testWarning = () => warning('잔액이 부족합니다. 확인해주세요.')
-const testInfo = () => info('새로운 기능이 추가되었습니다.')
 
 </script>
 

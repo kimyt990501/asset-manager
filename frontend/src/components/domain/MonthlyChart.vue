@@ -25,16 +25,26 @@ const props = defineProps({
   variableExpenses: { type: Number, default: 0 }
 })
 
+// CSS 변수에서 색상 가져오기
+const getCSSVariable = (variable: string) => {
+  return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
+}
+
 const chartData = computed(() => ({
   labels: ['수입', '고정지출', '변동지출', '저축액'],
   datasets: [
     {
       label: '금액',
-      backgroundColor: ['#10B981', '#EF4444', '#F59E0B', '#4F46E5'],
+      backgroundColor: [
+        getCSSVariable('--secondary'),      // 수입: 초록
+        getCSSVariable('--danger'),         // 고정지출: 빨강
+        getCSSVariable('--warning'),        // 변동지출: 주황
+        getCSSVariable('--primary')         // 저축액: 파랑
+      ],
       data: [
-        props.income, 
-        props.fixedExpenses, 
-        props.variableExpenses, 
+        props.income,
+        props.fixedExpenses,
+        props.variableExpenses,
         props.income - (props.fixedExpenses + props.variableExpenses)
       ],
       borderRadius: 6
@@ -54,7 +64,7 @@ const chartOptions = {
     y: {
       beginAtZero: true,
       grid: {
-        color: '#E5E7EB'
+        color: getCSSVariable('--border-light')
       }
     },
     x: {

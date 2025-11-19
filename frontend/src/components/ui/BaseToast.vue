@@ -133,7 +133,7 @@ defineEmits(['close'])
 /* Warning Variant */
 .toast--warning {
   border-color: var(--warning);
-  background: #fef3c7; /* Amber 100 */
+  background: var(--warning-light);
 }
 
 .toast--warning .toast-icon {
@@ -142,7 +142,7 @@ defineEmits(['close'])
 }
 
 .toast--warning .toast-message {
-  color: #b45309; /* Amber 700 */
+  color: var(--warning-dark);
 }
 
 /* Info Variant */

@@ -23,7 +23,12 @@
     </BaseEmptyState>
 
     <div v-else class="recurring-list">
-      <div v-for="recurring in recurringTransactions" :key="recurring.id" class="recurring-item">
+      <div
+        v-for="(recurring, index) in recurringTransactions"
+        :key="recurring.id"
+        :style="{ animationDelay: `${index * 0.03}s` }"
+        class="recurring-item recurring-item-animate"
+      >
         <div class="recurring-info">
           <div class="recurring-main">
             <span class="recurring-category">{{ recurring.category }}</span>
@@ -169,11 +174,30 @@ const handleDeactivate = async (id: number) => {
   align-items: center;
   padding: var(--spacing-lg);
   border-bottom: 1px solid var(--border);
-  transition: var(--transition-base);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.recurring-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--primary);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
 }
 
 .recurring-item:hover {
   background: var(--background);
+  transform: translateX(4px);
+}
+
+.recurring-item:hover::before {
+  transform: scaleY(1);
 }
 
 .recurring-item:last-child {
@@ -260,5 +284,20 @@ const handleDeactivate = async (id: number) => {
   color: var(--text-muted);
   margin-bottom: var(--spacing-lg);
   font-size: 1.1rem;
+}
+
+.recurring-item-animate {
+  animation: listItemSlide 0.4s ease-out both;
+}
+
+@keyframes listItemSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 </style>

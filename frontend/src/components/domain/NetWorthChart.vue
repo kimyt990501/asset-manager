@@ -35,17 +35,32 @@ const props = defineProps({
   labels: { type: Array as () => string[], default: () => [] }
 })
 
+// CSS 변수에서 색상 가져오기
+const getCSSVariable = (variable: string) => {
+  return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
+}
+
+// 색상을 rgba로 변환 (투명도 적용)
+const hexToRgba = (hex: string, alpha: number) => {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
+const primaryColor = getCSSVariable('--primary')
+
 const chartData = computed(() => ({
   labels: props.labels.length ? props.labels : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
   datasets: [
     {
       label: '순자산',
-      backgroundColor: 'rgba(79, 70, 229, 0.1)',
-      borderColor: '#4F46E5',
-      pointBackgroundColor: '#4F46E5',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#4F46E5',
+      backgroundColor: hexToRgba(primaryColor, 0.1),
+      borderColor: primaryColor,
+      pointBackgroundColor: primaryColor,
+      pointBorderColor: getCSSVariable('--surface'),
+      pointHoverBackgroundColor: getCSSVariable('--surface'),
+      pointHoverBorderColor: primaryColor,
       fill: true,
       tension: 0.4,
       data: props.dataPoints.length ? props.dataPoints : [0, 0, 0, 0, 0, 0]
@@ -64,7 +79,7 @@ const chartOptions = {
   scales: {
     y: {
       grid: {
-        color: '#E5E7EB'
+        color: getCSSVariable('--border-light')
       }
     },
     x: {

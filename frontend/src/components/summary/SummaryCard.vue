@@ -37,12 +37,12 @@ const icon = computed(() => {
 
 <style scoped>
 .summary-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
   display: flex;
-  gap: 1rem;
+  gap: var(--spacing-md);
   align-items: center;
 }
 
@@ -53,34 +53,34 @@ const icon = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  background: #f8f9fa;
+  border-radius: var(--radius-lg);
+  background: var(--background);
 }
 
 .summary-content h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 0.9rem;
-  color: #7f8c8d;
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: var(--font-sm);
+  color: var(--text-muted);
   font-weight: normal;
 }
 
 .summary-amount {
-  font-size: 1.75rem;
-  font-weight: bold;
+  font-size: var(--font-3xl);
+  font-weight: var(--font-bold);
   margin: 0;
-  color: #2c3e50;
+  color: var(--text-main);
 }
 
 .summary-card--income .summary-amount {
-  color: #27ae60;
+  color: var(--secondary);
 }
 
 .summary-card--expense .summary-amount {
-  color: #e74c3c;
+  color: var(--danger);
 }
 
 .summary-subtitle {
-  font-size: 0.8rem;
-  color: #95a5a6;
+  font-size: var(--font-xs);
+  color: var(--text-light);
 }
 </style>

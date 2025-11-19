@@ -38,12 +38,31 @@ const { formatCurrency, formatDate } = useFormatter()
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  border-bottom: 1px solid #ecf0f1;
-  transition: background 0.2s ease;
+  border-bottom: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.transaction-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--primary);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
 }
 
 .transaction-item:hover {
-  background: #f8f9fa;
+  background: var(--background);
+  transform: translateX(4px);
+}
+
+.transaction-item:hover::before {
+  transform: scaleY(1);
 }
 
 .transaction-item:last-child {
@@ -63,27 +82,27 @@ const { formatCurrency, formatDate } = useFormatter()
 
 .transaction-category {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-main);
 }
 
 .transaction-account {
   font-size: 0.85rem;
-  color: #95a5a6;
-  background: #ecf0f1;
+  color: var(--text-muted);
+  background: var(--border-light);
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--radius-full);
 }
 
 .transaction-description {
   margin: 0.5rem 0;
   font-size: 0.9rem;
-  color: #7f8c8d;
+  color: var(--text-muted);
 }
 
 .transaction-date {
   margin: 0;
   font-size: 0.85rem;
-  color: #95a5a6;
+  color: var(--text-light);
 }
 
 .transaction-amount {
@@ -93,11 +112,11 @@ const { formatCurrency, formatDate } = useFormatter()
 }
 
 .transaction-income {
-  color: #27ae60;
+  color: var(--secondary);
 }
 
 .transaction-expense {
-  color: #e74c3c;
+  color: var(--danger);
 }
 
 @media (max-width: 768px) {

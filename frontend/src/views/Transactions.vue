@@ -42,10 +42,12 @@
     <div v-else class="transactions-container">
       <div class="transactions-list">
         <TransactionItem
-          v-for="transaction in transactions"
+          v-for="(transaction, index) in transactions"
           :key="transaction.id"
           :transaction="transaction"
           :account-name="getAccountById(transaction.account_id)?.name || '알 수 없음'"
+          :style="{ animationDelay: `${index * 0.03}s` }"
+          class="transaction-item-animate"
           @click="handleTransactionClick(transaction)"
         />
       </div>
@@ -207,6 +209,21 @@ const handleTransactionClick = (transaction: Transaction) => {
   color: var(--text-muted);
   margin-bottom: var(--spacing-lg);
   font-size: 1.1rem;
+}
+
+.transaction-item-animate {
+  animation: listItemSlide 0.4s ease-out both;
+}
+
+@keyframes listItemSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @media (max-width: 768px) {

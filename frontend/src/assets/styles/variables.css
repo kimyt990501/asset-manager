@@ -27,6 +27,18 @@
   /* Warning: Amber */
   --warning: #f59e0b;
   /* Amber 500 */
+  --warning-light: #fef3c7;
+  /* Amber 100 */
+  --warning-dark: #b45309;
+  /* Amber 700 */
+
+  /* Info: Blue */
+  --info: #3b82f6;
+  /* Blue 500 */
+  --info-light: #dbeafe;
+  /* Blue 100 */
+  --info-dark: #1e40af;
+  /* Blue 700 */
 
   /* Neutrals: Slate */
   --background: #f8fafc;
