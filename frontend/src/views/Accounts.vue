@@ -7,14 +7,24 @@
       </Button>
     </div>
 
-    <Loading v-if="loading && accounts.length === 0" />
-
-    <div v-else-if="accounts.length === 0" class="empty-state">
-      <p>등록된 계좌가 없습니다.</p>
-      <Button variant="primary" @click="openCreateModal">
-        첫 계좌 추가하기
-      </Button>
+    <div v-if="loading && accounts.length === 0" class="accounts-grid">
+      <AccountCardSkeleton v-for="i in 4" :key="i" />
     </div>
+
+    <BaseEmptyState
+      v-else-if="accounts.length === 0"
+      title="등록된 계좌가 없습니다"
+      description="첫 번째 계좌를 추가하여 자산 관리를 시작하세요."
+      action="계좌 추가하기"
+      @action="openCreateModal"
+    >
+      <template #icon>
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+      </template>
+    </BaseEmptyState>
 
     <div v-else>
       <AccountList
@@ -62,9 +72,10 @@ import { useNotification } from '@/composables/useNotification'
 import type { Account, AccountFormData } from '@/types'
 import AccountList from '@/components/account/AccountList.vue'
 import AccountForm from '@/components/account/AccountForm.vue'
+import AccountCardSkeleton from '@/components/account/AccountCardSkeleton.vue'
+import BaseEmptyState from '@/components/ui/BaseEmptyState.vue'
 import Modal from '@/components/ui/BaseModal.vue'
 import Button from '@/components/ui/BaseButton.vue'
-import Loading from '@/components/common/Loading.vue'
 
 const accountStore = useAccountStore()
 const { accounts, loading } = storeToRefs(accountStore)
@@ -146,19 +157,10 @@ const handleDelete = async (account: Account) => {
   letter-spacing: -0.02em;
 }
 
-.empty-state {
-  text-align: center;
-  padding: var(--spacing-2xl);
-  background: var(--surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-light);
-}
-
-.empty-state p {
-  color: var(--text-muted);
-  margin-bottom: var(--spacing-lg);
-  font-size: 1.1rem;
+.accounts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-md);
 }
 
 @media (max-width: 768px) {
@@ -166,6 +168,10 @@ const handleDelete = async (account: Account) => {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-md);
+  }
+
+  .accounts-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>

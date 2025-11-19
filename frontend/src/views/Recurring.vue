@@ -7,14 +7,20 @@
       </Button>
     </div>
 
-    <Loading v-if="loading && recurringTransactions.length === 0" />
-
-    <div v-else-if="recurringTransactions.length === 0" class="empty-state">
-      <p>등록된 고정 지출이 없습니다.</p>
-      <Button variant="primary" @click="openCreateModal">
-        첫 고정 지출 추가하기
-      </Button>
-    </div>
+    <BaseEmptyState
+      v-if="recurringTransactions.length === 0"
+      title="고정 지출이 없습니다"
+      description="정기적으로 발생하는 지출을 등록하여 예산 관리를 더 효율적으로 하세요."
+      action="고정 지출 추가하기"
+      @action="openCreateModal"
+    >
+      <template #icon>
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </template>
+    </BaseEmptyState>
 
     <div v-else class="recurring-list">
       <div v-for="recurring in recurringTransactions" :key="recurring.id" class="recurring-item">
@@ -73,9 +79,9 @@ import { useFormatter } from '@/composables/useFormatter'
 import { FREQUENCY_LABELS } from '@/utils/constants'
 import type { RecurringFormData } from '@/types'
 import RecurringForm from '@/components/recurring/RecurringForm.vue'
+import BaseEmptyState from '@/components/ui/BaseEmptyState.vue'
 import Modal from '@/components/ui/BaseModal.vue'
 import Button from '@/components/ui/BaseButton.vue'
-import Loading from '@/components/common/Loading.vue'
 
 const accountStore = useAccountStore()
 const recurringStore = useRecurringStore()

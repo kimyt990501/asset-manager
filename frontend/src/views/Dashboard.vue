@@ -5,17 +5,30 @@
         <h1>나의 자산 현황</h1>
         <p class="subtitle">반갑습니다. 현재 재무 상태를 한눈에 확인하세요.</p>
       </div>
-      <div class="date-selector glass-panel">
-        <span>{{ currentDate }}</span>
-        <i class="icon-chevron-down"></i>
+      <div class="header-actions">
+        <div class="date-selector glass-panel">
+          <span>{{ currentDate }}</span>
+          <i class="icon-chevron-down"></i>
+        </div>
+        <!-- Toast Test Buttons - 개발용 -->
+        <div class="toast-test-buttons" style="display: flex; gap: 0.5rem; margin-left: 1rem;">
+          <button @click="testSuccess" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #10b981; background: #d1fae5; cursor: pointer;">✓</button>
+          <button @click="testError" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #ef4444; background: #fee2e2; cursor: pointer;">✕</button>
+          <button @click="testWarning" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #f59e0b; background: #fef3c7; cursor: pointer;">⚠</button>
+          <button @click="testInfo" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #6366f1; background: #e0e7ff; cursor: pointer;">ℹ</button>
+        </div>
       </div>
     </header>
 
     <!-- Asset Summary -->
     <section class="section">
-      <AssetSummary 
-        :assets="summaryData.assets" 
-        :liabilities="summaryData.liabilities" 
+      <div v-if="loading" class="summary-grid">
+        <SummaryCardSkeleton v-for="i in 3" :key="i" />
+      </div>
+      <AssetSummary
+        v-else
+        :assets="summaryData.assets"
+        :liabilities="summaryData.liabilities"
       />
     </section>
 
@@ -23,29 +36,35 @@
       <!-- Monthly Overview -->
       <section class="section">
         <BaseCard>
-          <div class="card-header">
-            <h3 class="card-title">월별 수입/지출</h3>
-            <span class="card-badge">수입 vs 지출</span>
-          </div>
-          <MonthlyChart 
-            :income="monthlyData.income"
-            :fixedExpenses="monthlyData.fixedExpenses"
-            :variableExpenses="monthlyData.variableExpenses"
-          />
+          <ChartSkeleton v-if="loading" />
+          <template v-else>
+            <div class="card-header">
+              <h3 class="card-title">월별 수입/지출</h3>
+              <span class="card-badge">수입 vs 지출</span>
+            </div>
+            <MonthlyChart
+              :income="monthlyData.income"
+              :fixedExpenses="monthlyData.fixedExpenses"
+              :variableExpenses="monthlyData.variableExpenses"
+            />
+          </template>
         </BaseCard>
       </section>
 
       <!-- Net Worth Trend -->
       <section class="section">
         <BaseCard>
-          <div class="card-header">
-            <h3 class="card-title">순자산 추이</h3>
-            <span class="card-badge">최근 6개월</span>
-          </div>
-          <NetWorthChart 
-            :dataPoints="netWorthTrend.data"
-            :labels="netWorthTrend.labels"
-          />
+          <ChartSkeleton v-if="loading" />
+          <template v-else>
+            <div class="card-header">
+              <h3 class="card-title">순자산 추이</h3>
+              <span class="card-badge">최근 6개월</span>
+            </div>
+            <NetWorthChart
+              :dataPoints="netWorthTrend.data"
+              :labels="netWorthTrend.labels"
+            />
+          </template>
         </BaseCard>
       </section>
     </div>
@@ -54,15 +73,20 @@
 
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSummaryStore } from '@/stores/summaryStore'
+import { useNotification } from '@/composables/useNotification'
 import BaseCard from '../components/ui/BaseCard.vue'
 import AssetSummary from '../components/domain/AssetSummary.vue'
 import MonthlyChart from '../components/domain/MonthlyChart.vue'
 import NetWorthChart from '../components/domain/NetWorthChart.vue'
+import ChartSkeleton from '../components/ui/ChartSkeleton.vue'
+import SummaryCardSkeleton from '../components/summary/SummaryCardSkeleton.vue'
 
 const summaryStore = useSummaryStore()
+const { success, error, warning, info } = useNotification()
+const loading = ref(false)
 const { 
   totalAssets, 
   monthlyFixedIncome, 
@@ -72,10 +96,17 @@ const {
 
 // Fetch data on mount
 onMounted(async () => {
-  await Promise.all([
-    summaryStore.fetchSummary(),
-    summaryStore.fetchTrend()
-  ])
+  loading.value = true
+  try {
+    await Promise.all([
+      summaryStore.fetchSummary(),
+      summaryStore.fetchTrend()
+    ])
+  } catch (err) {
+    error('데이터를 불러오는데 실패했습니다.')
+  } finally {
+    loading.value = false
+  }
 })
 
 // Computed props for child components
@@ -98,6 +129,12 @@ const currentDate = computed(() => {
   return `${now.getFullYear()}년 ${now.getMonth() + 1}월`
 })
 
+// Toast 테스트 함수들 (개발용)
+const testSuccess = () => success('계좌가 성공적으로 추가되었습니다!')
+const testError = () => error('계좌 추가에 실패했습니다. 다시 시도해주세요.')
+const testWarning = () => warning('잔액이 부족합니다. 확인해주세요.')
+const testInfo = () => info('새로운 기능이 추가되었습니다.')
+
 </script>
 
 <style scoped>
@@ -112,6 +149,11 @@ const currentDate = computed(() => {
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: var(--spacing-md);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
 }
 
 .header-content h1 {
@@ -172,13 +214,20 @@ const currentDate = computed(() => {
   border-radius: var(--radius-full);
 }
 
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
 @media (max-width: 768px) {
   .dashboard-header {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-md);
   }
-  
+
   .charts-grid {
     grid-template-columns: 1fr;
   }

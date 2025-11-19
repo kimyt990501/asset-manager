@@ -1,46 +1,32 @@
-import { ref } from 'vue'
-import type { NotificationOptions } from '../types'
+import { useToastStore } from '@/stores/toastStore'
 
-const notifications = ref<Array<NotificationOptions & { id: number }>>([])
-let notificationId = 0
-
+/**
+ * Toast 알림을 사용하기 위한 composable
+ * Toast Store를 래핑하여 편리하게 사용할 수 있도록 합니다.
+ */
 export const useNotification = () => {
-  const show = (options: NotificationOptions) => {
-    const id = notificationId++
-    const notification = { ...options, id }
-    notifications.value.push(notification)
+  const toastStore = useToastStore()
 
-    const duration = options.duration || 3000
-    setTimeout(() => {
-      remove(id)
-    }, duration)
+  const success = (message: string, duration?: number) => {
+    return toastStore.success(message, duration)
   }
 
-  const remove = (id: number) => {
-    const index = notifications.value.findIndex(n => n.id === id)
-    if (index > -1) {
-      notifications.value.splice(index, 1)
-    }
+  const error = (message: string, duration?: number) => {
+    return toastStore.error(message, duration)
   }
 
-  const success = (message: string) => {
-    show({ type: 'success', message })
+  const warning = (message: string, duration?: number) => {
+    return toastStore.warning(message, duration)
   }
 
-  const error = (message: string) => {
-    show({ type: 'error', message })
-  }
-
-  const info = (message: string) => {
-    show({ type: 'info', message })
+  const info = (message: string, duration?: number) => {
+    return toastStore.info(message, duration)
   }
 
   return {
-    notifications,
-    show,
-    remove,
     success,
     error,
+    warning,
     info
   }
 }

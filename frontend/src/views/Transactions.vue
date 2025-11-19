@@ -20,14 +20,24 @@
       </div>
     </div>
 
-    <Loading v-if="loading && transactions.length === 0" />
-
-    <div v-else-if="transactions.length === 0" class="empty-state">
-      <p>등록된 출입금 내역이 없습니다.</p>
-      <Button variant="primary" @click="openCreateModal">
-        첫 내역 추가하기
-      </Button>
+    <div v-if="loading && transactions.length === 0" class="transactions-skeleton">
+      <TransactionItemSkeleton v-for="i in 5" :key="i" />
     </div>
+
+    <BaseEmptyState
+      v-else-if="transactions.length === 0"
+      title="출입금 내역이 없습니다"
+      description="첫 번째 거래를 기록하여 자산 흐름을 추적하세요."
+      action="거래 추가하기"
+      @action="openCreateModal"
+    >
+      <template #icon>
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"></line>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+      </template>
+    </BaseEmptyState>
 
     <div v-else class="transactions-container">
       <div class="transactions-list">
@@ -67,9 +77,10 @@ import { useNotification } from '@/composables/useNotification'
 import type { Transaction, TransactionFormData } from '@/types'
 import TransactionItem from '@/components/transaction/TransactionItem.vue'
 import TransactionForm from '@/components/transaction/TransactionForm.vue'
+import TransactionItemSkeleton from '@/components/transaction/TransactionItemSkeleton.vue'
+import BaseEmptyState from '@/components/ui/BaseEmptyState.vue'
 import Modal from '@/components/ui/BaseModal.vue'
 import Button from '@/components/ui/BaseButton.vue'
-import Loading from '@/components/common/Loading.vue'
 
 const accountStore = useAccountStore()
 const transactionStore = useTransactionStore()

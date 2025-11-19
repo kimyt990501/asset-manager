@@ -4,31 +4,42 @@
       <div class="nav-brand">
         <h2>💰 Asset Manager</h2>
       </div>
-      <div class="nav-links">
-        <router-link to="/" class="nav-link">대시보드</router-link>
-        <router-link to="/accounts" class="nav-link">계좌</router-link>
-        <router-link to="/transactions" class="nav-link">출입금내역</router-link>
-        <router-link to="/recurring" class="nav-link">고정 지출 목록</router-link>
+      <div class="nav-links" role="navigation" aria-label="주 메뉴">
+        <router-link to="/" class="nav-link" aria-label="대시보드 페이지로 이동">대시보드</router-link>
+        <router-link to="/accounts" class="nav-link" aria-label="계좌 페이지로 이동">계좌</router-link>
+        <router-link to="/transactions" class="nav-link" aria-label="출입금내역 페이지로 이동">출입금내역</router-link>
+        <router-link to="/recurring" class="nav-link" aria-label="고정 지출 목록 페이지로 이동">고정 지출 목록</router-link>
       </div>
     </nav>
 
     <main class="main-content">
-      <router-view />
+      <router-view v-slot="{ Component, route }">
+        <transition name="page" mode="out-in">
+          <component :is="Component" :key="route.path" />
+        </transition>
+      </router-view>
     </main>
 
     <!-- Quick Add FAB -->
-    <button class="fab-btn" @click="isModalOpen = true" title="Add Transaction">
+    <button
+      class="fab-btn"
+      @click="isModalOpen = true"
+      aria-label="새 거래 추가"
+    >
       <span class="fab-icon">+</span>
     </button>
 
     <!-- Transaction Modal -->
-    <BaseModal 
-      :isOpen="isModalOpen" 
-      title="Add Transaction" 
+    <BaseModal
+      :isOpen="isModalOpen"
+      title="Add Transaction"
       @close="isModalOpen = false"
     >
       <TransactionForm @submit="handleTransactionSubmit" @cancel="isModalOpen = false" />
     </BaseModal>
+
+    <!-- Toast Container -->
+    <ToastContainer />
   </div>
 </template>
 
@@ -36,6 +47,7 @@
 import { ref } from 'vue'
 import BaseModal from './components/ui/BaseModal.vue'
 import TransactionForm from './components/domain/TransactionForm.vue'
+import ToastContainer from './components/ui/ToastContainer.vue'
 
 const isModalOpen = ref(false)
 
@@ -99,6 +111,29 @@ const handleTransactionSubmit = (data: any) => {
   margin: 0 auto;
   padding: var(--spacing-xl);
   width: 100%;
+  position: relative;
+}
+
+/* Page Transition Animations */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.page-enter-to,
+.page-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* FAB Styles */

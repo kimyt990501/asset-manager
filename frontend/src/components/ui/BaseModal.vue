@@ -1,17 +1,31 @@
 <template>
   <Teleport to="body">
     <Transition name="modal">
-      <div v-if="isOpen" class="modal-backdrop" @click="$emit('close')">
+      <div
+        v-if="isOpen"
+        class="modal-backdrop"
+        role="dialog"
+        aria-modal="true"
+        :aria-labelledby="titleId"
+        @click="$emit('close')"
+        @keydown.esc="$emit('close')"
+      >
         <div class="modal-container" @click.stop>
           <header class="modal-header">
-            <h3 class="modal-title">{{ title }}</h3>
-            <button class="close-btn" @click="$emit('close')">&times;</button>
+            <h3 :id="titleId" class="modal-title">{{ title }}</h3>
+            <button
+              class="close-btn"
+              @click="$emit('close')"
+              aria-label="닫기"
+            >
+              &times;
+            </button>
           </header>
-          
+
           <div class="modal-body">
             <slot></slot>
           </div>
-          
+
           <footer v-if="$slots.footer" class="modal-footer">
             <slot name="footer"></slot>
           </footer>
@@ -22,7 +36,9 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
+import { computed, watch, onMounted, onUnmounted } from 'vue'
+
+const props = defineProps({
   isOpen: {
     type: Boolean,
     required: true
@@ -33,7 +49,34 @@ defineProps({
   }
 })
 
-defineEmits(['close'])
+const emit = defineEmits(['close'])
+
+// 고유 ID 생성 (접근성을 위한 aria-labelledby)
+const titleId = computed(() => `modal-title-${Math.random().toString(36).substr(2, 9)}`)
+
+// Escape 키 핸들러
+const handleEscape = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && props.isOpen) {
+    emit('close')
+  }
+}
+
+// 모달이 열릴 때 body 스크롤 방지
+watch(() => props.isOpen, (isOpen) => {
+  if (isOpen) {
+    document.body.style.overflow = 'hidden'
+    document.addEventListener('keydown', handleEscape)
+  } else {
+    document.body.style.overflow = ''
+    document.removeEventListener('keydown', handleEscape)
+  }
+})
+
+// 컴포넌트 언마운트 시 정리
+onUnmounted(() => {
+  document.body.style.overflow = ''
+  document.removeEventListener('keydown', handleEscape)
+})
 </script>
 
 <style scoped>
@@ -83,12 +126,20 @@ defineEmits(['close'])
   font-size: 1.5rem;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 0;
+  padding: var(--spacing-xs);
   line-height: 1;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-base);
 }
 
 .close-btn:hover {
   color: var(--text-main);
+  background: var(--background);
+}
+
+.close-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 .modal-body {
