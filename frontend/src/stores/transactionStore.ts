@@ -43,6 +43,25 @@ export const useTransactionStore = defineStore('transaction', () => {
     }
   }
 
+  const updateTransaction = async (id: number, transactionData: Partial<TransactionFormData>) => {
+    try {
+      console.log('Updating transaction:', id, transactionData)
+      const response = await transactionsAPI.update(id, transactionData)
+      const index = transactions.value.findIndex(tx => tx.id === id)
+      if (index !== -1) {
+        transactions.value[index] = response.data
+      }
+      // 계좌 잔액 업데이트
+      await accountStore.fetchSummary()
+      return response.data
+    } catch (err: any) {
+      console.error('Update transaction error:', err)
+      console.error('Error response:', err.response?.data)
+      error.value = err.response?.data?.detail || err.message || '거래 수정에 실패했습니다'
+      throw err
+    }
+  }
+
   const deleteTransaction = async (id: number) => {
     try {
       console.log('Deleting transaction with id:', id)
@@ -64,6 +83,7 @@ export const useTransactionStore = defineStore('transaction', () => {
     error,
     fetchTransactions,
     createTransaction,
+    updateTransaction,
     deleteTransaction
   }
 })

@@ -36,6 +36,8 @@ export const transactionsAPI = {
     return api.get<Transaction[]>('/transactions/', { params })
   },
   create: (data: TransactionFormData) => api.post<Transaction>('/transactions/', data),
+  update: (id: number, data: Partial<TransactionFormData>) =>
+    api.patch<Transaction>(`/transactions/${id}`, data),
   delete: (id: number) => api.delete(`/transactions/${id}`)
 }
 
@@ -45,10 +47,11 @@ export const recurringAPI = {
     const params = accountId ? { account_id: accountId } : {}
     return api.get<RecurringTransaction[]>('/recurring/', { params })
   },
-  create: (data: RecurringFormData) => 
+  create: (data: RecurringFormData) =>
     api.post<RecurringTransaction>('/recurring/', data),
-  update: (id: number, data: Partial<RecurringFormData>) => 
+  update: (id: number, data: Partial<RecurringFormData>) =>
     api.patch<RecurringTransaction>(`/recurring/${id}`, data),
+  delete: (id: number) => api.delete(`/recurring/${id}`),
   deactivate: (id: number) => api.post(`/recurring/${id}/deactivate`)
 }
 

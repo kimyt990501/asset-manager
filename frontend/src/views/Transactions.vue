@@ -49,20 +49,23 @@
           :style="{ animationDelay: `${index * 0.03}s` }"
           class="transaction-item-animate"
           @click="handleTransactionClick(transaction)"
+          @edit="openEditModal(transaction)"
+          @delete="handleDelete(transaction)"
         />
       </div>
     </div>
 
-    <!-- Create Modal -->
+    <!-- Create/Edit Modal -->
     <Modal
       :is-open="isModalOpen"
-      title="거래 추가"
+      :title="editingTransaction ? '거래 수정' : '거래 추가'"
       @close="closeModal"
     >
       <TransactionForm
         :accounts="accounts"
         :loading="formLoading"
-        @submit="handleCreate"
+        :initial-data="editingTransaction"
+        @submit="handleSubmit"
         @cancel="closeModal"
       />
     </Modal>
@@ -93,6 +96,7 @@ const { success, error } = useNotification()
 
 const formLoading = ref(false)
 const selectedAccountId = ref<number | undefined>(undefined)
+const editingTransaction = ref<Transaction | null>(null)
 
 onMounted(async () => {
   await Promise.all([
@@ -106,7 +110,21 @@ const handleFilterChange = async () => {
 }
 
 const openCreateModal = () => {
+  editingTransaction.value = null
   openModal()
+}
+
+const openEditModal = (transaction: Transaction) => {
+  editingTransaction.value = transaction
+  openModal()
+}
+
+const handleSubmit = async (formData: TransactionFormData) => {
+  if (editingTransaction.value) {
+    await handleUpdate(formData)
+  } else {
+    await handleCreate(formData)
+  }
 }
 
 const handleCreate = async (formData: TransactionFormData) => {
@@ -122,8 +140,34 @@ const handleCreate = async (formData: TransactionFormData) => {
   }
 }
 
+const handleUpdate = async (formData: TransactionFormData) => {
+  if (!editingTransaction.value) return
+
+  formLoading.value = true
+  try {
+    await transactionStore.updateTransaction(editingTransaction.value.id, formData)
+    success('거래가 수정되었습니다.')
+    closeModal()
+  } catch (err) {
+    error('거래 수정에 실패했습니다.')
+  } finally {
+    formLoading.value = false
+  }
+}
+
+const handleDelete = async (transaction: Transaction) => {
+  if (!confirm('정말 이 거래를 삭제하시겠습니까?')) return
+
+  try {
+    await transactionStore.deleteTransaction(transaction.id)
+    success('거래가 삭제되었습니다.')
+  } catch (err) {
+    error('거래 삭제에 실패했습니다.')
+  }
+}
+
 const handleTransactionClick = (transaction: Transaction) => {
-  // 향후 거래 상세 보기나 수정 기능 추가 가능
+  // 향후 거래 상세 보기 기능 추가 가능
   console.log('Transaction clicked:', transaction)
 }
 </script>

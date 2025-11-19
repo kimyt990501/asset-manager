@@ -65,15 +65,15 @@
         취소
       </Button>
       <Button variant="primary" type="submit" :loading="loading">
-        추가
+        {{ initialData ? '수정' : '추가' }}
       </Button>
     </div>
   </form>
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
-import type { Account, TransactionFormData } from '@/types'
+import { reactive, computed, watch } from 'vue'
+import type { Account, TransactionFormData, Transaction } from '@/types'
 import { CATEGORIES } from '@/utils/constants'
 import { useFormatter } from '@/composables/useFormatter'
 import Button from '@/components/ui/BaseButton.vue'
@@ -81,10 +81,12 @@ import Button from '@/components/ui/BaseButton.vue'
 interface Props {
   accounts: Account[]
   loading?: boolean
+  initialData?: Transaction | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  loading: false
+  loading: false,
+  initialData: null
 })
 
 const emit = defineEmits<{
@@ -95,12 +97,40 @@ const emit = defineEmits<{
 const { formatCurrency } = useFormatter()
 
 const formData = reactive<TransactionFormData>({
-  account_id: 0,
-  type: 'expense',
-  category: '',
-  amount: 0,
-  description: '',
-  transaction_date: new Date().toISOString().split('T')[0]
+  account_id: props.initialData?.account_id || 0,
+  type: props.initialData?.type || 'expense',
+  category: props.initialData?.category || CATEGORIES.expense[0] || '',
+  amount: props.initialData?.amount ? Number(props.initialData.amount) : 0,
+  description: props.initialData?.description || '',
+  transaction_date: props.initialData?.transaction_date || new Date().toISOString().split('T')[0]
+})
+
+// Watch for initialData changes (for edit mode)
+watch(() => props.initialData, (newData) => {
+  if (newData) {
+    formData.account_id = newData.account_id
+    formData.type = newData.type
+    formData.category = newData.category
+    formData.amount = Number(newData.amount)
+    formData.description = newData.description || ''
+    formData.transaction_date = newData.transaction_date
+  } else {
+    // Reset form for create mode
+    formData.account_id = 0
+    formData.type = 'expense'
+    formData.category = CATEGORIES.expense[0] || ''
+    formData.amount = 0
+    formData.description = ''
+    formData.transaction_date = new Date().toISOString().split('T')[0]
+  }
+}, { immediate: true })
+
+// Watch for type change to reset category
+watch(() => formData.type, (newType) => {
+  const categories = newType === 'income' ? CATEGORIES.income : CATEGORIES.expense
+  if (!props.initialData && categories.length > 0) {
+    formData.category = categories[0]
+  }
 })
 
 const availableCategories = computed(() => {
@@ -108,10 +138,16 @@ const availableCategories = computed(() => {
 })
 
 const handleSubmit = () => {
+  console.log('handleSubmit called', formData)
   if (formData.account_id === 0) {
     alert('계좌를 선택해주세요')
     return
   }
+  if (!formData.category) {
+    alert('카테고리를 선택해주세요')
+    return
+  }
+  console.log('Emitting submit', { ...formData })
   emit('submit', { ...formData })
 }
 </script>

@@ -47,6 +47,19 @@ export const useRecurringStore = defineStore('recurring', () => {
     }
   }
 
+  const deleteRecurring = async (id: number) => {
+    try {
+      console.log('Deleting recurring with id:', id)
+      await recurringAPI.delete(id)
+      recurringTransactions.value = recurringTransactions.value.filter(r => r.id !== id)
+    } catch (err: any) {
+      console.error('Delete recurring error:', err)
+      console.error('Error response:', err.response?.data)
+      error.value = err.response?.data?.detail || err.message || '정기 거래 삭제에 실패했습니다'
+      throw err
+    }
+  }
+
   const deactivateRecurring = async (id: number) => {
     try {
       console.log('Deactivating recurring with id:', id)
@@ -70,6 +83,7 @@ export const useRecurringStore = defineStore('recurring', () => {
     fetchRecurring,
     createRecurring,
     updateRecurring,
+    deleteRecurring,
     deactivateRecurring
   }
 })

@@ -46,26 +46,28 @@
           <div class="recurring-amount" :class="`transaction-${recurring.type}`">
             {{ recurring.type === 'income' ? '+' : '-' }}{{ formatCurrency(recurring.amount) }}
           </div>
-          <Button 
-            v-if="recurring.is_active"
-            variant="danger" 
-            @click="handleDeactivate(recurring.id)"
-          >
-            비활성화
-          </Button>
+          <div class="action-buttons">
+            <button class="action-btn edit-btn" @click="openEditModal(recurring)">
+              수정
+            </button>
+            <button class="action-btn delete-btn" @click="handleDelete(recurring.id)">
+              삭제
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Create Modal -->
+    <!-- Create/Edit Modal -->
     <Modal
       :is-open="isModalOpen"
-      title="정기 거래 추가"
+      :title="editingRecurring ? '정기 거래 수정' : '정기 거래 추가'"
       @close="closeModal"
     >
       <RecurringForm
         :accounts="accounts"
         :loading="formLoading"
+        :initial-data="editingRecurring"
         @submit="handleSubmit"
         @cancel="closeModal"
       />
@@ -82,7 +84,7 @@ import { useModal } from '@/composables/useModal'
 import { useNotification } from '@/composables/useNotification'
 import { useFormatter } from '@/composables/useFormatter'
 import { FREQUENCY_LABELS } from '@/utils/constants'
-import type { RecurringFormData } from '@/types'
+import type { RecurringFormData, RecurringTransaction } from '@/types'
 import RecurringForm from '@/components/recurring/RecurringForm.vue'
 import BaseEmptyState from '@/components/ui/BaseEmptyState.vue'
 import Modal from '@/components/ui/BaseModal.vue'
@@ -97,6 +99,7 @@ const { success, error } = useNotification()
 const { formatCurrency } = useFormatter()
 
 const formLoading = ref(false)
+const editingRecurring = ref<RecurringTransaction | null>(null)
 
 onMounted(async () => {
   await Promise.all([
@@ -110,10 +113,24 @@ const getFrequencyLabel = (frequency: string) => {
 }
 
 const openCreateModal = () => {
+  editingRecurring.value = null
+  openModal()
+}
+
+const openEditModal = (recurring: RecurringTransaction) => {
+  editingRecurring.value = recurring
   openModal()
 }
 
 const handleSubmit = async (formData: RecurringFormData) => {
+  if (editingRecurring.value) {
+    await handleUpdate(formData)
+  } else {
+    await handleCreate(formData)
+  }
+}
+
+const handleCreate = async (formData: RecurringFormData) => {
   formLoading.value = true
   try {
     await recurringStore.createRecurring(formData)
@@ -126,16 +143,29 @@ const handleSubmit = async (formData: RecurringFormData) => {
   }
 }
 
-const handleDeactivate = async (id: number) => {
-  if (!confirm('이 정기 거래를 비활성화하시겠습니까?')) {
-    return
-  }
-  
+const handleUpdate = async (formData: RecurringFormData) => {
+  if (!editingRecurring.value) return
+
+  formLoading.value = true
   try {
-    await recurringStore.deactivateRecurring(id)
-    success('정기 거래가 비활성화되었습니다.')
+    await recurringStore.updateRecurring(editingRecurring.value.id, formData)
+    success('정기 거래가 수정되었습니다.')
+    closeModal()
   } catch (err) {
-    error('비활성화에 실패했습니다.')
+    error('정기 거래 수정에 실패했습니다.')
+  } finally {
+    formLoading.value = false
+  }
+}
+
+const handleDelete = async (id: number) => {
+  if (!confirm('정말 이 정기 거래를 삭제하시겠습니까?')) return
+
+  try {
+    await recurringStore.deleteRecurring(id)
+    success('정기 거래가 삭제되었습니다.')
+  } catch (err) {
+    error('정기 거래 삭제에 실패했습니다.')
   }
 }
 </script>
@@ -253,8 +283,7 @@ const handleDeactivate = async (id: number) => {
 
 .recurring-actions {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: var(--spacing-md);
 }
 
@@ -269,6 +298,50 @@ const handleDeactivate = async (id: number) => {
 
 .transaction-expense {
   color: var(--danger);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.recurring-item:hover .action-buttons {
+  opacity: 1;
+}
+
+.action-btn {
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+  background: var(--surface);
+  color: var(--text-main);
+}
+
+.edit-btn:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.delete-btn {
+  background: transparent;
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.delete-btn:hover {
+  background: var(--danger);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
 }
 
 .empty-state {
