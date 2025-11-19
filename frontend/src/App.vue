@@ -1,87 +1,136 @@
 <template>
   <div id="app">
-    <nav class="navbar">
+    <nav class="navbar glass-panel">
       <div class="nav-brand">
         <h2>💰 Asset Manager</h2>
       </div>
       <div class="nav-links">
         <router-link to="/" class="nav-link">대시보드</router-link>
         <router-link to="/accounts" class="nav-link">계좌</router-link>
-        <router-link to="/transactions" class="nav-link">거래내역</router-link>
-        <router-link to="/recurring" class="nav-link">정기거래</router-link>
+        <router-link to="/transactions" class="nav-link">출입금내역</router-link>
+        <router-link to="/recurring" class="nav-link">고정 지출 목록</router-link>
       </div>
     </nav>
 
     <main class="main-content">
       <router-view />
     </main>
+
+    <!-- Quick Add FAB -->
+    <button class="fab-btn" @click="isModalOpen = true" title="Add Transaction">
+      <span class="fab-icon">+</span>
+    </button>
+
+    <!-- Transaction Modal -->
+    <BaseModal 
+      :isOpen="isModalOpen" 
+      title="Add Transaction" 
+      @close="isModalOpen = false"
+    >
+      <TransactionForm @submit="handleTransactionSubmit" @cancel="isModalOpen = false" />
+    </BaseModal>
   </div>
 </template>
 
 <script setup lang="ts">
-// App.vue - 메인 레이아웃
+import { ref } from 'vue'
+import BaseModal from './components/ui/BaseModal.vue'
+import TransactionForm from './components/domain/TransactionForm.vue'
+
+const isModalOpen = ref(false)
+
+const handleTransactionSubmit = (data: any) => {
+  console.log('Transaction added:', data)
+  // TODO: Call API store
+  isModalOpen.value = false
+}
 </script>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-#app {
-  min-height: 100vh;
-  background: #f5f6fa;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-}
-
+/* Global styles are in style.css */
 .navbar {
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 0 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 64px;
+  height: 70px;
   position: sticky;
   top: 0;
   z-index: 100;
+  margin-bottom: var(--spacing-md);
 }
 
 .nav-brand h2 {
-  color: #2c3e50;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .nav-links {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .nav-link {
   text-decoration: none;
-  color: #7f8c8d;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-full);
+  transition: var(--transition-base);
+  font-size: 0.95rem;
 }
 
 .nav-link:hover {
-  color: #2c3e50;
-  background: #f5f6fa;
+  color: var(--text-main);
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .nav-link.router-link-active {
-  color: #3498db;
-  background: rgba(52, 152, 219, 0.1);
+  color: var(--primary);
+  background: var(--primary-light);
 }
 
 .main-content {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: var(--spacing-xl);
+  width: 100%;
+}
+
+/* FAB Styles */
+.fab-btn {
+  position: fixed;
+  bottom: 2.5rem;
+  right: 2.5rem;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  z-index: 90;
+}
+
+.fab-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  font-weight: 300;
+  margin-top: -4px;
+}
+
+.fab-btn:hover {
+  transform: translateY(-4px) rotate(90deg);
+  box-shadow: var(--shadow-xl), var(--shadow-glow);
 }
 
 @media (max-width: 768px) {
@@ -93,11 +142,22 @@
   }
 
   .nav-links {
-    gap: 1rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .main-content {
-    padding: 1rem;
+    padding: var(--spacing-md);
+  }
+  
+  .fab-btn {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
   }
 }
 </style>
+
+

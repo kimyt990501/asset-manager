@@ -33,3 +33,9 @@ def get_full_summary(db: Session = Depends(get_db)):
     """전체 재정 요약"""
     service = SummaryService(db)
     return service.get_full_summary()
+
+@router.get("/net-worth-trend", response_model=dict)
+def get_net_worth_trend(months: int = 6, db: Session = Depends(get_db)):
+    """순자산 추이 조회"""
+    service = SummaryService(db)
+    return service.get_net_worth_trend(months=months)

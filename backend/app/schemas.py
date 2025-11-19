@@ -2,7 +2,23 @@ from pydantic import BaseModel, ConfigDict
 from decimal import Decimal
 from datetime import date, datetime
 from typing import Optional, List
-from app.models import AccountType, TransactionType, Frequency
+from app.models import AccountType, TransactionType, Frequency, CategoryType
+
+# Category Schemas
+class CategoryBase(BaseModel):
+    name: str
+    type: CategoryType
+    is_fixed: bool = False
+    parent_id: Optional[int] = None
+
+class CategoryCreate(CategoryBase):
+    pass
+
+class Category(CategoryBase):
+    id: int
+    user_id: int
+    
+    model_config = ConfigDict(from_attributes=True)
 
 # Account Schemas
 class AccountBase(BaseModel):
@@ -33,7 +49,7 @@ class Account(AccountBase):
 class TransactionBase(BaseModel):
     account_id: int
     type: TransactionType
-    category: str
+    category_id: int
     amount: Decimal
     description: Optional[str] = None
     transaction_date: date
@@ -45,6 +61,7 @@ class Transaction(TransactionBase):
     id: int
     is_recurring: bool
     created_at: datetime
+    category: Optional[Category] = None # Include category details in response
     
     model_config = ConfigDict(from_attributes=True)
 
@@ -52,7 +69,7 @@ class Transaction(TransactionBase):
 class RecurringTransactionBase(BaseModel):
     account_id: int
     type: TransactionType
-    category: str
+    category_id: int
     amount: Decimal
     description: Optional[str] = None
     frequency: Frequency
@@ -73,6 +90,7 @@ class RecurringTransaction(RecurringTransactionBase):
     is_active: bool
     created_at: datetime
     updated_at: datetime
+    category: Optional[Category] = None
     
     model_config = ConfigDict(from_attributes=True)
 
@@ -82,12 +100,15 @@ class TotalAssets(BaseModel):
     account_count: int
 
 class MonthlyExpense(BaseModel):
-    category: str
+    category_name: str
     amount: Decimal
+    is_fixed: bool
 
 class Summary(BaseModel):
     total_assets: Decimal
+    net_worth: Decimal
     monthly_fixed_expenses: Decimal
-    monthly_fixed_income: Decimal
+    monthly_variable_expenses: Decimal
+    monthly_income: Decimal
     net_monthly_cashflow: Decimal
     accounts: List[Account]

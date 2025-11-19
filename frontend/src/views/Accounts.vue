@@ -44,7 +44,7 @@
       @close="closeEditModal"
     >
       <AccountForm
-        :account="selectedAccount"
+        :account="selectedAccount || undefined"
         :loading="formLoading"
         @submit="handleUpdate"
         @cancel="closeEditModal"
@@ -136,25 +136,28 @@ const handleDelete = async (account: Account) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-lg);
 }
 
 .page-header h1 {
-  color: #2c3e50;
+  color: var(--text-main);
   font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .empty-state {
   text-align: center;
-  padding: 3rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: var(--spacing-2xl);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
 }
 
 .empty-state p {
-  color: #7f8c8d;
-  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-lg);
   font-size: 1.1rem;
 }
 
@@ -162,7 +165,8 @@ const handleDelete = async (account: Account) => {
   .page-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: var(--spacing-md);
   }
 }
 </style>
+

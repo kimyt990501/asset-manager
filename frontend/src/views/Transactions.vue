@@ -1,9 +1,9 @@
 <template>
   <div class="transactions-page">
     <div class="page-header">
-      <h1>거래 내역</h1>
+      <h1>출입금내역</h1>
       <Button variant="primary" @click="openCreateModal">
-        + 거래 추가
+        + 내역 추가
       </Button>
     </div>
 
@@ -23,9 +23,9 @@
     <Loading v-if="loading && transactions.length === 0" />
 
     <div v-else-if="transactions.length === 0" class="empty-state">
-      <p>등록된 거래 내역이 없습니다.</p>
+      <p>등록된 출입금 내역이 없습니다.</p>
       <Button variant="primary" @click="openCreateModal">
-        첫 거래 추가하기
+        첫 내역 추가하기
       </Button>
     </div>
 
@@ -124,51 +124,59 @@ const handleTransactionClick = (transaction: Transaction) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-lg);
 }
 
 .page-header h1 {
-  color: #2c3e50;
+  color: var(--text-main);
   font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .filters {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
+  background: var(--surface);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-lg);
+  border: 1px solid var(--border-light);
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .filter-group label {
-  font-weight: 500;
-  color: #2c3e50;
+  font-weight: 600;
+  color: var(--text-main);
   font-size: 0.9rem;
 }
 
 .filter-group select {
   padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   font-size: 1rem;
   max-width: 300px;
+  background-color: var(--surface);
+  color: var(--text-main);
+  transition: var(--transition-base);
 }
 
 .filter-group select:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 .transactions-container {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
 }
 
 .transactions-list {
@@ -177,15 +185,16 @@ const handleTransactionClick = (transaction: Transaction) => {
 
 .empty-state {
   text-align: center;
-  padding: 3rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: var(--spacing-2xl);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
 }
 
 .empty-state p {
-  color: #7f8c8d;
-  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-lg);
   font-size: 1.1rem;
 }
 
@@ -193,7 +202,7 @@ const handleTransactionClick = (transaction: Transaction) => {
   .page-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: var(--spacing-md);
   }
 
   .filter-group select {
@@ -201,3 +210,4 @@ const handleTransactionClick = (transaction: Transaction) => {
   }
 }
 </style>
+

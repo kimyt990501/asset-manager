@@ -15,6 +15,10 @@ class TransactionType(str, enum.Enum):
     expense = "expense"
     transfer = "transfer"
 
+class CategoryType(str, enum.Enum):
+    income = "income"
+    expense = "expense"
+
 class Frequency(str, enum.Enum):
     daily = "daily"
     weekly = "weekly"
@@ -37,13 +41,26 @@ class Account(Base):
     transactions = relationship("Transaction", back_populates="account", cascade="all, delete-orphan")
     recurring_transactions = relationship("RecurringTransaction", back_populates="account", cascade="all, delete-orphan")
 
+class Category(Base):
+    __tablename__ = "categories"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, default=1)
+    name = Column(String(50), nullable=False)
+    type = Column(Enum(CategoryType), nullable=False)
+    is_fixed = Column(Boolean, default=False) # True for Fixed expenses (e.g., Rent), False for Variable
+    parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    
+    children = relationship("Category", backref="parent", remote_side=[id])
+    transactions = relationship("Transaction", back_populates="category")
+
 class Transaction(Base):
     __tablename__ = "transactions"
     
     id = Column(Integer, primary_key=True, index=True)
     account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False) # Changed from String to FK
     type = Column(Enum(TransactionType), nullable=False)
-    category = Column(String(50), nullable=False)
     amount = Column(Numeric(15, 2), nullable=False)
     description = Column(Text)
     transaction_date = Column(Date, nullable=False)
@@ -51,6 +68,7 @@ class Transaction(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     account = relationship("Account", back_populates="transactions")
+    category = relationship("Category", back_populates="transactions")
 
 class RecurringTransaction(Base):
     __tablename__ = "recurring_transactions"
@@ -58,7 +76,7 @@ class RecurringTransaction(Base):
     id = Column(Integer, primary_key=True, index=True)
     account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)
     type = Column(Enum(TransactionType), nullable=False)
-    category = Column(String(50), nullable=False)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False) # Changed from String to FK
     amount = Column(Numeric(15, 2), nullable=False)
     description = Column(Text)
     frequency = Column(Enum(Frequency), default=Frequency.monthly)
@@ -70,17 +88,19 @@ class RecurringTransaction(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     account = relationship("Account", back_populates="recurring_transactions")
+    category = relationship("Category")
 
-class BudgetCategory(Base):
-    __tablename__ = "budget_categories"
+class Budget(Base):
+    __tablename__ = "budgets"
     
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, default=1)
-    name = Column(String(50), nullable=False)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
     monthly_limit = Column(Numeric(15, 2))
-    color = Column(String(7), default="#3B82F6")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    category = relationship("Category")
 
 class AssetSnapshot(Base):
     __tablename__ = "asset_snapshots"
@@ -88,6 +108,8 @@ class AssetSnapshot(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, default=1)
     total_assets = Column(Numeric(15, 2), nullable=False)
+    net_worth = Column(Numeric(15, 2), nullable=False, default=0) # Added Net Worth
     accounts_summary = Column(JSON)
     snapshot_date = Column(Date, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+

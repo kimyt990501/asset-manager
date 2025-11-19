@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func, extract
 from typing import List, Optional
 from datetime import date
+from decimal import Decimal
 from app import schemas, models
 from app.repositories.transaction_repository import TransactionRepository
 from app.repositories.account_repository import AccountRepository
@@ -58,19 +60,31 @@ class TransactionService:
         self.db.commit()
         return True
     
-    def get_monthly_spending_by_category(self, account_id: int, year: int, month: int) -> dict:
-        """월별 카테고리별 지출 집계 (비즈니스 로직)"""
-        start_date = date(year, month, 1)
-        if month == 12:
-            end_date = date(year + 1, 1, 1)
-        else:
-            end_date = date(year, month + 1, 1)
-        
-        transactions = self.transaction_repo.get_by_date_range(account_id, start_date, end_date)
-        
-        category_totals = {}
+    def get_monthly_summary(self, year: int, month: int, user_id: int = 1) -> dict:
+        """월별 수입/지출(고정/변동) 요약"""
+        transactions = self.db.query(models.Transaction).join(models.Category).filter(
+            models.Transaction.account.has(user_id=user_id),
+            extract('year', models.Transaction.transaction_date) == year,
+            extract('month', models.Transaction.transaction_date) == month
+        ).all()
+
+        income = Decimal(0)
+        fixed_expenses = Decimal(0)
+        variable_expenses = Decimal(0)
+
         for tx in transactions:
-            if tx.type == models.TransactionType.expense:
-                category_totals[tx.category] = category_totals.get(tx.category, 0) + float(tx.amount)
-        
-        return category_totals
+            if tx.type == models.TransactionType.income:
+                income += tx.amount
+            elif tx.type == models.TransactionType.expense:
+                if tx.category.is_fixed:
+                    fixed_expenses += tx.amount
+                else:
+                    variable_expenses += tx.amount
+
+        return {
+            "income": income,
+            "fixed_expenses": fixed_expenses,
+            "variable_expenses": variable_expenses,
+            "net_cashflow": income - (fixed_expenses + variable_expenses)
+        }
+

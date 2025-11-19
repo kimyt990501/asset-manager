@@ -58,3 +58,40 @@ class SummaryService:
             net_monthly_cashflow=monthly_income - monthly_expenses,
             accounts=[schemas.Account.model_validate(acc) for acc in accounts]
         )
+
+    def get_net_worth_trend(self, user_id: int = 1, months: int = 6) -> dict:
+        """순자산 추이 조회 (최근 N개월)"""
+        # 1. Get snapshots ordered by date desc
+        snapshots = self.db.query(models.AssetSnapshot)\
+            .filter(models.AssetSnapshot.user_id == user_id)\
+            .order_by(models.AssetSnapshot.snapshot_date.desc())\
+            .limit(months)\
+            .all()
+        
+        # 2. If no snapshots, return current state as a single point
+        if not snapshots:
+            current_assets = self.get_total_assets(user_id)
+            # For simplicity, we assume liabilities are 0 for now or need a way to calculate them.
+            # But get_total_assets only sums account balances (which are assets).
+            # If we want true net worth, we need to subtract liabilities.
+            # For now, let's assume net_worth ~= total_assets (unless we have liability accounts).
+            # Let's check AccountType.
+            
+            # Create a pseudo-snapshot for today
+            from datetime import date
+            return {
+                "labels": [date.today().strftime("%Y-%m")],
+                "data": [float(current_assets)]
+            }
+
+        # 3. Process snapshots
+        # Reverse to show chronological order
+        snapshots.reverse()
+        
+        labels = [s.snapshot_date.strftime("%Y-%m") for s in snapshots]
+        data = [float(s.net_worth) for s in snapshots]
+        
+        return {
+            "labels": labels,
+            "data": data
+        }

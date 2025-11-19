@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from decimal import Decimal
-from app import schemas
+from app import schemas, models
 from app.repositories.account_repository import AccountRepository
 from app.core.exceptions import AccountNotFoundError, InsufficientBalanceError
 
@@ -71,3 +71,11 @@ class AccountService:
         
         self.db.flush()
         return schemas.Account.model_validate(db_account)
+
+    def calculate_net_worth(self, user_id: int = 1) -> Decimal:
+        """순자산 계산 (모든 계좌 잔액 합계)"""
+        accounts = self.repo.get_all(user_id)
+        total_assets = sum(acc.balance for acc in accounts)
+        # 추후 부채(Liabilities)가 추가되면 여기서 차감
+        return total_assets
+

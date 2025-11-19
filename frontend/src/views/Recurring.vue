@@ -1,18 +1,18 @@
 <template>
   <div class="recurring-page">
     <div class="page-header">
-      <h1>정기 거래</h1>
+      <h1>고정 지출 목록</h1>
       <Button variant="primary" @click="openCreateModal">
-        + 정기 거래 추가
+        + 고정 지출 추가
       </Button>
     </div>
 
     <Loading v-if="loading && recurringTransactions.length === 0" />
 
     <div v-else-if="recurringTransactions.length === 0" class="empty-state">
-      <p>등록된 정기 거래가 없습니다.</p>
+      <p>등록된 고정 지출이 없습니다.</p>
       <Button variant="primary" @click="openCreateModal">
-        첫 정기 거래 추가하기
+        첫 고정 지출 추가하기
       </Button>
     </div>
 
@@ -131,34 +131,43 @@ const handleDeactivate = async (id: number) => {
 
 <style scoped>
 .recurring-page {
-  padding: 1rem;
+  min-height: calc(100vh - 64px - 4rem);
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-lg);
 }
 
 .page-header h1 {
   margin: 0;
-  color: #2c3e50;
+  color: var(--text-main);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .recurring-list {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
+  border: 1px solid var(--border-light);
 }
 
 .recurring-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #ecf0f1;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition-base);
+}
+
+.recurring-item:hover {
+  background: var(--background);
 }
 
 .recurring-item:last-child {
@@ -171,75 +180,79 @@ const handleDeactivate = async (id: number) => {
 
 .recurring-main {
   display: flex;
-  gap: 1rem;
+  gap: var(--spacing-md);
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
 }
 
 .recurring-category {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-main);
+  font-size: 1rem;
 }
 
 .recurring-frequency {
   font-size: 0.85rem;
-  color: #95a5a6;
-  background: #ecf0f1;
+  color: var(--text-muted);
+  background: var(--border-light);
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--radius-full);
+  font-weight: 500;
 }
 
 .inactive-badge {
   font-size: 0.75rem;
-  color: #e74c3c;
-  background: rgba(231, 76, 60, 0.1);
+  color: var(--danger);
+  background: var(--danger-light);
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-weight: 500;
+  border-radius: var(--radius-full);
+  font-weight: 600;
 }
 
 .recurring-description {
-  margin: 0.5rem 0;
+  margin: var(--spacing-sm) 0;
   font-size: 0.9rem;
-  color: #7f8c8d;
+  color: var(--text-muted);
 }
 
 .recurring-schedule {
   margin: 0;
   font-size: 0.85rem;
-  color: #95a5a6;
+  color: var(--text-light);
 }
 
 .recurring-actions {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 1rem;
+  gap: var(--spacing-md);
 }
 
 .recurring-amount {
   font-size: 1.25rem;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .transaction-income {
-  color: #27ae60;
+  color: var(--secondary);
 }
 
 .transaction-expense {
-  color: #e74c3c;
+  color: var(--danger);
 }
 
 .empty-state {
   text-align: center;
-  padding: 3rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: var(--spacing-2xl);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
 }
 
 .empty-state p {
-  color: #7f8c8d;
-  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-lg);
+  font-size: 1.1rem;
 }
 </style>

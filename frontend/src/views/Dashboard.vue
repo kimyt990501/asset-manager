@@ -1,209 +1,187 @@
 <template>
   <div class="dashboard">
-    <h1 class="page-title">대시보드</h1>
-
-    <Loading v-if="loading && !summary" />
-
-    <div v-else>
-      <!-- 요약 정보 -->
-      <div class="summary-cards">
-        <SummaryCard
-          title="총 자산"
-          :amount="totalAssets"
-          type="assets"
-        />
-        <SummaryCard
-          title="월 고정 수입"
-          :amount="monthlyIncome"
-          type="income"
-        />
-        <SummaryCard
-          title="월 고정 지출"
-          :amount="monthlyExpenses"
-          type="expense"
-        />
-        <SummaryCard
-          title="순 현금 흐름"
-          :amount="netCashflow"
-          type="cashflow"
-        />
+    <header class="dashboard-header">
+      <div class="header-content">
+        <h1>나의 자산 현황</h1>
+        <p class="subtitle">반갑습니다. 현재 재무 상태를 한눈에 확인하세요.</p>
       </div>
+      <div class="date-selector glass-panel">
+        <span>{{ currentDate }}</span>
+        <i class="icon-chevron-down"></i>
+      </div>
+    </header>
 
-      <!-- 계좌 목록 -->
-      <div class="section">
-        <div class="section-header">
-          <h2>내 계좌</h2>
-          <Button variant="primary" @click="goToAccounts">
-            전체 보기
-          </Button>
-        </div>
+    <!-- Asset Summary -->
+    <section class="section">
+      <AssetSummary 
+        :assets="summaryData.assets" 
+        :liabilities="summaryData.liabilities" 
+      />
+    </section>
 
-        <div v-if="accounts.length === 0" class="empty-state">
-          <p>등록된 계좌가 없습니다.</p>
-          <Button variant="primary" @click="goToAccounts">
-            계좌 추가하기
-          </Button>
-        </div>
-
-        <div v-else class="account-grid">
-          <AccountCard
-            v-for="account in accounts.slice(0, 4)"
-            :key="account.id"
-            :account="account"
-            @edit="goToAccounts"
+    <div class="charts-grid">
+      <!-- Monthly Overview -->
+      <section class="section">
+        <BaseCard>
+          <div class="card-header">
+            <h3 class="card-title">월별 수입/지출</h3>
+            <span class="card-badge">수입 vs 지출</span>
+          </div>
+          <MonthlyChart 
+            :income="monthlyData.income"
+            :fixedExpenses="monthlyData.fixedExpenses"
+            :variableExpenses="monthlyData.variableExpenses"
           />
-        </div>
-      </div>
+        </BaseCard>
+      </section>
 
-      <!-- 최근 거래 -->
-      <div class="section">
-        <div class="section-header">
-          <h2>최근 거래</h2>
-          <Button variant="secondary" @click="goToTransactions">
-            전체 보기
-          </Button>
-        </div>
-
-        <div v-if="recentTransactions.length === 0" class="empty-state">
-          <p>최근 거래 내역이 없습니다.</p>
-        </div>
-
-        <div v-else class="transactions-list">
-          <TransactionItem
-            v-for="transaction in recentTransactions"
-            :key="transaction.id"
-            :transaction="transaction"
-            :account-name="getAccountById(transaction.account_id)?.name || '알 수 없음'"
+      <!-- Net Worth Trend -->
+      <section class="section">
+        <BaseCard>
+          <div class="card-header">
+            <h3 class="card-title">순자산 추이</h3>
+            <span class="card-badge">최근 6개월</span>
+          </div>
+          <NetWorthChart 
+            :dataPoints="netWorthTrend.data"
+            :labels="netWorthTrend.labels"
           />
-        </div>
-      </div>
+        </BaseCard>
+      </section>
     </div>
   </div>
 </template>
 
+
 <script setup lang="ts">
 import { onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { useAccountStore } from '@/stores/accountStore'
-import { useTransactionStore } from '@/stores/transactionStore'
-import SummaryCard from '@/components/summary/SummaryCard.vue'
-import AccountCard from '@/components/account/AccountCard.vue'
-import TransactionItem from '@/components/transaction/TransactionItem.vue'
-import Button from '@/components/common/Button.vue'
-import Loading from '@/components/common/Loading.vue'
+import { useSummaryStore } from '@/stores/summaryStore'
+import BaseCard from '../components/ui/BaseCard.vue'
+import AssetSummary from '../components/domain/AssetSummary.vue'
+import MonthlyChart from '../components/domain/MonthlyChart.vue'
+import NetWorthChart from '../components/domain/NetWorthChart.vue'
 
-const router = useRouter()
-const accountStore = useAccountStore()
-const transactionStore = useTransactionStore()
+const summaryStore = useSummaryStore()
+const { 
+  totalAssets, 
+  monthlyFixedIncome, 
+  monthlyFixedExpenses, 
+  netWorthTrend 
+} = storeToRefs(summaryStore)
 
-const {
-  summary,
-  accounts,
-  totalAssets,
-  monthlyIncome,
-  monthlyExpenses,
-  netCashflow,
-  getAccountById
-} = storeToRefs(accountStore)
-
-const { transactions } = storeToRefs(transactionStore)
-const loading = computed(() => accountStore.loading || transactionStore.loading)
-
-const recentTransactions = computed(() => {
-  return transactions.value.slice(0, 5)
-})
-
+// Fetch data on mount
 onMounted(async () => {
   await Promise.all([
-    accountStore.fetchSummary(),
-    transactionStore.fetchTransactions(undefined, 10)
+    summaryStore.fetchSummary(),
+    summaryStore.fetchTrend()
   ])
 })
 
-const goToAccounts = () => {
-  router.push('/accounts')
-}
+// Computed props for child components
+// Note: Liabilities are not yet tracked separately in the backend summary, 
+// so we assume 0 for now or we could add a liabilities field later.
+// For now, let's assume totalAssets is Net Worth.
+const summaryData = computed(() => ({
+  assets: totalAssets.value,
+  liabilities: 0 // Placeholder
+}))
 
-const goToTransactions = () => {
-  router.push('/transactions')
-}
+const monthlyData = computed(() => ({
+  income: monthlyFixedIncome.value,
+  fixedExpenses: monthlyFixedExpenses.value,
+  variableExpenses: 0 // Variable expenses are not yet in the summary endpoint
+}))
+
+const currentDate = computed(() => {
+  const now = new Date()
+  return `${now.getFullYear()}년 ${now.getMonth() + 1}월`
+})
+
 </script>
 
 <style scoped>
 .dashboard {
-  min-height: calc(100vh - 64px - 4rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
 }
 
-.page-title {
-  color: #2c3e50;
-  margin-bottom: 2rem;
-  font-size: 2rem;
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--spacing-md);
 }
 
-.summary-cards {
+.header-content h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.03em;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.date-selector {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.date-selector:hover {
+  background: var(--surface);
+}
+
+.charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: var(--spacing-lg);
 }
 
-.section {
-  margin-bottom: 3rem;
-}
-
-.section-header {
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-lg);
 }
 
-.section-header h2 {
-  color: #2c3e50;
-  font-size: 1.5rem;
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
 }
 
-.account-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.transactions-list {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 3rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.empty-state p {
-  color: #7f8c8d;
-  margin-bottom: 1.5rem;
-  font-size: 1.1rem;
+.card-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
 }
 
 @media (max-width: 768px) {
-  .summary-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .account-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .section-header {
+  .dashboard-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: var(--spacing-md);
+  }
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>
+
