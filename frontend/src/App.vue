@@ -23,47 +23,18 @@
       </router-view>
     </main>
 
-    <!-- Quick Add FAB -->
-    <button
-      class="fab-btn"
-      @click="isModalOpen = true"
-      aria-label="새 거래 추가"
-    >
-      <span class="fab-icon">+</span>
-    </button>
-
-    <!-- Transaction Modal -->
-    <BaseModal
-      :isOpen="isModalOpen"
-      title="Add Transaction"
-      @close="isModalOpen = false"
-    >
-      <TransactionForm @submit="handleTransactionSubmit" @cancel="isModalOpen = false" />
-    </BaseModal>
-
     <!-- Toast Container -->
     <ToastContainer />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import BaseModal from './components/ui/BaseModal.vue'
-import TransactionForm from './components/domain/TransactionForm.vue'
 import ToastContainer from './components/ui/ToastContainer.vue'
 import ThemeToggle from './components/ui/ThemeToggle.vue'
 import { useTheme } from './composables/useTheme'
 
 // 테마 초기화
 useTheme()
-
-const isModalOpen = ref(false)
-
-const handleTransactionSubmit = (data: any) => {
-  console.log('Transaction added:', data)
-  // TODO: Call API store
-  isModalOpen.value = false
-}
 </script>
 
 <style>
@@ -150,38 +121,6 @@ const handleTransactionSubmit = (data: any) => {
   transform: translateY(0);
 }
 
-/* FAB Styles */
-.fab-btn {
-  position: fixed;
-  bottom: 2.5rem;
-  right: 2.5rem;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-  color: white;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-lg), var(--shadow-glow);
-  cursor: pointer;
-  transition: var(--transition-smooth);
-  z-index: 90;
-}
-
-.fab-icon {
-  font-size: 2.5rem;
-  line-height: 1;
-  font-weight: 300;
-  margin-top: -4px;
-}
-
-.fab-btn:hover {
-  transform: translateY(-4px) rotate(90deg);
-  box-shadow: var(--shadow-xl), var(--shadow-glow);
-}
-
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
@@ -198,13 +137,6 @@ const handleTransactionSubmit = (data: any) => {
 
   .main-content {
     padding: var(--spacing-md);
-  }
-  
-  .fab-btn {
-    bottom: 1.5rem;
-    right: 1.5rem;
-    width: 56px;
-    height: 56px;
   }
 }
 </style>
