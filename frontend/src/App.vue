@@ -47,7 +47,7 @@ useTheme()
   height: 70px;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: var(--z-sticky);
   margin-bottom: var(--spacing-md);
 }
 
