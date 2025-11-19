@@ -49,7 +49,7 @@ class Account(AccountBase):
 class TransactionBase(BaseModel):
     account_id: int
     type: TransactionType
-    category_id: int
+    category: str  # Changed from category_id to match DB schema
     amount: Decimal
     description: Optional[str] = None
     transaction_date: date
@@ -61,15 +61,14 @@ class Transaction(TransactionBase):
     id: int
     is_recurring: bool
     created_at: datetime
-    category: Optional[Category] = None # Include category details in response
-    
+
     model_config = ConfigDict(from_attributes=True)
 
 # Recurring Transaction Schemas
 class RecurringTransactionBase(BaseModel):
     account_id: int
     type: TransactionType
-    category_id: int
+    category: str  # Changed from category_id to match DB schema
     amount: Decimal
     description: Optional[str] = None
     frequency: Frequency
@@ -90,8 +89,7 @@ class RecurringTransaction(RecurringTransactionBase):
     is_active: bool
     created_at: datetime
     updated_at: datetime
-    category: Optional[Category] = None
-    
+
     model_config = ConfigDict(from_attributes=True)
 
 # Summary Schemas

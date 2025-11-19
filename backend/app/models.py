@@ -50,33 +50,31 @@ class Category(Base):
     type = Column(Enum(CategoryType), nullable=False)
     is_fixed = Column(Boolean, default=False) # True for Fixed expenses (e.g., Rent), False for Variable
     parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
-    
+
     children = relationship("Category", backref="parent", remote_side=[id])
-    transactions = relationship("Transaction", back_populates="category")
 
 class Transaction(Base):
     __tablename__ = "transactions"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)
-    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False) # Changed from String to FK
+    category = Column(String(50), nullable=False)  # Reverted to match DB schema
     type = Column(Enum(TransactionType), nullable=False)
     amount = Column(Numeric(15, 2), nullable=False)
     description = Column(Text)
     transaction_date = Column(Date, nullable=False)
     is_recurring = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
+
     account = relationship("Account", back_populates="transactions")
-    category = relationship("Category", back_populates="transactions")
 
 class RecurringTransaction(Base):
     __tablename__ = "recurring_transactions"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)
     type = Column(Enum(TransactionType), nullable=False)
-    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False) # Changed from String to FK
+    category = Column(String(50), nullable=False)  # Reverted to match DB schema
     amount = Column(Numeric(15, 2), nullable=False)
     description = Column(Text)
     frequency = Column(Enum(Frequency), default=Frequency.monthly)
@@ -86,9 +84,8 @@ class RecurringTransaction(Base):
     end_date = Column(Date)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    
+
     account = relationship("Account", back_populates="recurring_transactions")
-    category = relationship("Category")
 
 class Budget(Base):
     __tablename__ = "budgets"

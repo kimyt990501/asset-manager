@@ -53,8 +53,10 @@ class SummaryService:
         
         return schemas.Summary(
             total_assets=total_assets,
+            net_worth=total_assets,
             monthly_fixed_expenses=monthly_expenses,
-            monthly_fixed_income=monthly_income,
+            monthly_variable_expenses=Decimal("0"),
+            monthly_income=monthly_income,
             net_monthly_cashflow=monthly_income - monthly_expenses,
             accounts=[schemas.Account.model_validate(acc) for acc in accounts]
         )
