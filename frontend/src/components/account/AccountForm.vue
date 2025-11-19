@@ -68,7 +68,7 @@
 import { computed } from 'vue'
 import { reactive, watch } from 'vue'
 import type { Account, AccountFormData } from '../../types'
-import Button from '../common/Button.vue'
+import Button from '../ui/BaseButton.vue'
 
 interface Props {
   account?: Account

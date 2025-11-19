@@ -73,8 +73,8 @@ import { useFormatter } from '@/composables/useFormatter'
 import { FREQUENCY_LABELS } from '@/utils/constants'
 import type { RecurringFormData } from '@/types'
 import RecurringForm from '@/components/recurring/RecurringForm.vue'
-import Modal from '@/components/common/Modal.vue'
-import Button from '@/components/common/Button.vue'
+import Modal from '@/components/ui/BaseModal.vue'
+import Button from '@/components/ui/BaseButton.vue'
 import Loading from '@/components/common/Loading.vue'
 
 const accountStore = useAccountStore()

@@ -76,7 +76,7 @@ import { reactive, computed } from 'vue'
 import type { Account, TransactionFormData } from '@/types'
 import { CATEGORIES } from '@/utils/constants'
 import { useFormatter } from '@/composables/useFormatter'
-import Button from '@/components/common/Button.vue'
+import Button from '@/components/ui/BaseButton.vue'
 
 interface Props {
   accounts: Account[]

@@ -1,5 +1,5 @@
 <template>
-  <div class="account-card" :style="{ borderLeftColor: accountColor }">
+  <div class="account-card" :style="{ borderLeftColor: accountColorVar }">
     <div class="account-header">
       <div>
         <h3>{{ account.name }}</h3>
@@ -30,8 +30,6 @@
 import { computed } from 'vue'
 import type { Account } from '@/types'
 import { useFormatter } from '@/composables/useFormatter'
-import { ACCOUNT_TYPE_COLORS } from '@/utils/constants'
-
 
 interface Props {
   account: Account
@@ -45,62 +43,79 @@ const emit = defineEmits<{
 
 const { formatCurrency, formatShortDate, getAccountTypeLabel } = useFormatter()
 
-const accountColor = computed(() => ACCOUNT_TYPE_COLORS[props.account.type] || '#95a5a6')
+// CSS 변수로 계좌 타입별 색상 매핑
+const accountColorVar = computed(() => {
+  const colorMap: Record<string, string> = {
+    checking: 'var(--account-checking)',
+    savings: 'var(--account-savings)',
+    investment: 'var(--account-investment)',
+    cma: 'var(--account-credit)', // CMA를 credit 색상으로 매핑
+    credit: 'var(--account-credit)',
+    loan: 'var(--account-loan)'
+  }
+  return colorMap[props.account.type] || 'var(--account-other)'
+})
 </script>
 
 <style scoped>
 .account-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
   border-left: 4px solid;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: var(--transition-base);
+  border: 1px solid var(--border-light);
 }
 
 .account-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border);
 }
 
 .account-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .account-header h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.1rem;
-  color: #2c3e50;
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: var(--font-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-main);
+  letter-spacing: -0.01em;
 }
 
 .account-type {
-  background: #ecf0f1;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  color: #7f8c8d;
-  font-weight: 500;
+  background: var(--background);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  font-weight: var(--font-medium);
 }
 
 .action-buttons {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .action-btn {
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: var(--font-xl);
   cursor: pointer;
-  padding: 0.25rem;
-  transition: transform 0.2s ease;
+  padding: var(--spacing-xs);
+  transition: var(--transition-base);
+  border-radius: var(--radius-sm);
 }
 
 .action-btn:hover {
-  transform: scale(1.2);
+  transform: scale(1.15);
+  background: var(--background);
 }
 
 .action-btn--delete:hover {
@@ -108,17 +123,17 @@ const accountColor = computed(() => ACCOUNT_TYPE_COLORS[props.account.type] || '
 }
 
 .account-balance {
-  font-size: 1.75rem;
-  font-weight: bold;
-  color: #2c3e50;
-  margin: 1rem 0;
+  font-size: var(--font-3xl);
+  font-weight: var(--font-bold);
+  color: var(--text-main);
+  margin: var(--spacing-md) 0;
 }
 
 .account-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.85rem;
-  color: #95a5a6;
+  font-size: var(--font-sm);
+  color: var(--text-light);
 }
 </style>

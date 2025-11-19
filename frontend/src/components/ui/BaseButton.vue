@@ -1,10 +1,11 @@
 <template>
-  <button 
-    :class="['base-btn', `base-btn--${variant}`, `base-btn--${size}`]"
-    :disabled="disabled"
-    @click="$emit('click')"
+  <button
+    :class="['base-btn', `base-btn--${variant}`, `base-btn--${size}`, { 'base-btn--loading': loading }]"
+    :disabled="disabled || loading"
+    @click="handleClick"
   >
-    <slot></slot>
+    <span v-if="loading" class="spinner"></span>
+    <slot v-else></slot>
   </button>
 </template>
 
@@ -23,10 +24,18 @@ defineProps({
   disabled: {
     type: Boolean,
     default: false
+  },
+  loading: {
+    type: Boolean,
+    default: false
   }
 })
 
-defineEmits(['click'])
+const emit = defineEmits(['click'])
+
+const handleClick = (event: MouseEvent) => {
+  emit('click', event)
+}
 </script>
 
 <style scoped>
@@ -108,5 +117,24 @@ defineEmits(['click'])
 .base-btn--lg {
   padding: var(--spacing-md) var(--spacing-xl);
   font-size: 1.125rem;
+}
+
+/* Loading State */
+.base-btn--loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 </style>

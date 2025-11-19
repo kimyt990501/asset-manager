@@ -106,7 +106,7 @@
 import { reactive, computed } from 'vue'
 import type { Account, RecurringFormData } from '../../types'
 import { CATEGORIES } from '../../utils/constants'
-import Button from '../common/Button.vue'
+import Button from '../ui/BaseButton.vue'
 
 interface Props {
   accounts: Account[]

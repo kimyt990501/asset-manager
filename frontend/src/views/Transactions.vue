@@ -67,8 +67,8 @@ import { useNotification } from '@/composables/useNotification'
 import type { Transaction, TransactionFormData } from '@/types'
 import TransactionItem from '@/components/transaction/TransactionItem.vue'
 import TransactionForm from '@/components/transaction/TransactionForm.vue'
-import Modal from '@/components/common/Modal.vue'
-import Button from '@/components/common/Button.vue'
+import Modal from '@/components/ui/BaseModal.vue'
+import Button from '@/components/ui/BaseButton.vue'
 import Loading from '@/components/common/Loading.vue'
 
 const accountStore = useAccountStore()
