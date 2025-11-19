@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
+from decimal import Decimal
 from app import models, schemas
 
 class AccountRepository:
@@ -32,7 +33,7 @@ class AccountRepository:
         self.db.delete(account)
         self.db.flush()
     
-    def update_balance(self, account_id: int, amount_delta: float) -> Optional[models.Account]:
+    def update_balance(self, account_id: int, amount_delta: Decimal) -> Optional[models.Account]:
         account = self.get_by_id(account_id)
         if account:
             account.balance += amount_delta

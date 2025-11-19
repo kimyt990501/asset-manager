@@ -35,9 +35,9 @@ class TransactionService:
         
         # 비즈니스 로직: 계좌 잔액 업데이트
         if transaction.type == models.TransactionType.income:
-            self.account_repo.update_balance(transaction.account_id, float(transaction.amount))
+            self.account_repo.update_balance(transaction.account_id, transaction.amount)
         elif transaction.type == models.TransactionType.expense:
-            self.account_repo.update_balance(transaction.account_id, -float(transaction.amount))
+            self.account_repo.update_balance(transaction.account_id, -transaction.amount)
         
         self.db.commit()
         self.db.refresh(db_transaction)
@@ -52,9 +52,9 @@ class TransactionService:
         
         # 비즈니스 로직: 잔액 원복
         if db_transaction.type == models.TransactionType.income:
-            self.account_repo.update_balance(db_transaction.account_id, -float(db_transaction.amount))
+            self.account_repo.update_balance(db_transaction.account_id, -db_transaction.amount)
         elif db_transaction.type == models.TransactionType.expense:
-            self.account_repo.update_balance(db_transaction.account_id, float(db_transaction.amount))
+            self.account_repo.update_balance(db_transaction.account_id, db_transaction.amount)
         
         self.transaction_repo.delete(db_transaction)
         self.db.commit()
