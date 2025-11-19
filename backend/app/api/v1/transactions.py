@@ -32,6 +32,20 @@ def create_transaction(
     except InvalidTransactionError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
+
+@router.patch("/{transaction_id}", response_model=schemas.Transaction)
+def update_transaction(
+    transaction_id: int,
+    transaction_update: schemas.TransactionUpdate,
+    db: Session = Depends(get_db)
+):
+    """거래 수정 (잔액 자동 조정)"""
+    service = TransactionService(db)
+    try:
+        return service.update_transaction(transaction_id, transaction_update)
+    except InvalidTransactionError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
 @router.delete("/{transaction_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_transaction(
     transaction_id: int,

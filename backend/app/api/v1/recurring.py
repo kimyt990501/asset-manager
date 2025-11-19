@@ -67,6 +67,19 @@ def deactivate_recurring_transaction(
     except AccountNotFoundError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
+
+@router.delete("/{recurring_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_recurring_transaction(
+    recurring_id: int,
+    db: Session = Depends(get_db)
+):
+    """정기 거래 삭제"""
+    service = RecurringTransactionService(db)
+    try:
+        service.delete_recurring(recurring_id)
+    except AccountNotFoundError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
 @router.post("/process-due", status_code=status.HTTP_200_OK)
 def process_due_transactions(
     target_date: Optional[date] = Query(None, description="처리할 날짜 (기본: 오늘)"),

@@ -30,6 +30,14 @@ class TransactionRepository:
         self.db.add(db_transaction)
         self.db.flush()
         return db_transaction
+
+    
+    def update(self, transaction: models.Transaction, update_data: dict) -> models.Transaction:
+        for key, value in update_data.items():
+            if value is not None:
+                setattr(transaction, key, value)
+        self.db.flush()
+        return transaction
     
     def delete(self, transaction: models.Transaction) -> None:
         self.db.delete(transaction)

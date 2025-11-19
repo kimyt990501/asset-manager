@@ -67,6 +67,17 @@ class RecurringTransactionService:
         db_recurring.is_active = False
         self.db.commit()
         return True
+
+    
+    def delete_recurring(self, recurring_id: int) -> bool:
+        """정기 거래 삭제"""
+        db_recurring = self.repo.get_by_id(recurring_id)
+        if not db_recurring:
+            raise AccountNotFoundError(f"Recurring transaction {recurring_id} not found")
+        
+        self.repo.delete(db_recurring)
+        self.db.commit()
+        return True
     
     def process_due_recurring_transactions(self, target_date: date = None) -> int:
         """

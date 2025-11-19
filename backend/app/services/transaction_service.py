@@ -43,6 +43,42 @@ class TransactionService:
         self.db.refresh(db_transaction)
         
         return schemas.Transaction.model_validate(db_transaction)
+
+    
+    def update_transaction(self, transaction_id: int, transaction_update: schemas.TransactionUpdate) -> schemas.Transaction:
+        """거래 수정 (잔액 조정 포함)"""
+        db_transaction = self.transaction_repo.get_by_id(transaction_id)
+        if not db_transaction:
+            raise InvalidTransactionError(f"Transaction {transaction_id} not found")
+        
+        # 기존 거래 정보 저장
+        old_amount = db_transaction.amount
+        old_type = db_transaction.type
+        
+        # 거래 정보 업데이트
+        update_data = transaction_update.model_dump(exclude_unset=True)
+        updated_transaction = self.transaction_repo.update(db_transaction, update_data)
+        
+        # 금액이나 타입이 변경된 경우 잔액 조정
+        if 'amount' in update_data or 'type' in update_data:
+            # 기존 거래 롤백
+            if old_type == models.TransactionType.income:
+                self.account_repo.update_balance(db_transaction.account_id, -old_amount)
+            elif old_type == models.TransactionType.expense:
+                self.account_repo.update_balance(db_transaction.account_id, old_amount)
+            
+            # 새 거래 적용
+            new_type = updated_transaction.type
+            new_amount = updated_transaction.amount
+            if new_type == models.TransactionType.income:
+                self.account_repo.update_balance(db_transaction.account_id, new_amount)
+            elif new_type == models.TransactionType.expense:
+                self.account_repo.update_balance(db_transaction.account_id, -new_amount)
+        
+        self.db.commit()
+        self.db.refresh(updated_transaction)
+        
+        return schemas.Transaction.model_validate(updated_transaction)
     
     def delete_transaction(self, transaction_id: int) -> bool:
         """거래 삭제 및 잔액 롤백"""

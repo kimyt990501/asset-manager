@@ -32,6 +32,11 @@ class RecurringTransactionRepository:
             setattr(recurring, key, value)
         self.db.flush()
         return recurring
+
+    
+    def delete(self, recurring: models.RecurringTransaction) -> None:
+        self.db.delete(recurring)
+        self.db.flush()
     
     def get_monthly_sum_by_type(self, account_ids: List[int], transaction_type: models.TransactionType) -> Decimal:
         result = self.db.query(func.sum(models.RecurringTransaction.amount)).filter(

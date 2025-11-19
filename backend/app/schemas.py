@@ -57,6 +57,12 @@ class TransactionBase(BaseModel):
 class TransactionCreate(TransactionBase):
     is_recurring: bool = False
 
+class TransactionUpdate(BaseModel):
+    category: Optional[str] = None
+    amount: Optional[Decimal] = None
+    description: Optional[str] = None
+    transaction_date: Optional[date] = None
+
 class Transaction(TransactionBase):
     id: int
     is_recurring: bool
