@@ -4,11 +4,14 @@
       <div class="nav-brand">
         <h2>💰 Asset Manager</h2>
       </div>
-      <div class="nav-links" role="navigation" aria-label="주 메뉴">
-        <router-link to="/" class="nav-link" aria-label="대시보드 페이지로 이동">대시보드</router-link>
-        <router-link to="/accounts" class="nav-link" aria-label="계좌 페이지로 이동">계좌</router-link>
-        <router-link to="/transactions" class="nav-link" aria-label="출입금내역 페이지로 이동">출입금내역</router-link>
-        <router-link to="/recurring" class="nav-link" aria-label="고정 지출 목록 페이지로 이동">고정 지출 목록</router-link>
+      <div class="nav-right">
+        <div class="nav-links" role="navigation" aria-label="주 메뉴">
+          <router-link to="/" class="nav-link" aria-label="대시보드 페이지로 이동">대시보드</router-link>
+          <router-link to="/accounts" class="nav-link" aria-label="계좌 페이지로 이동">계좌</router-link>
+          <router-link to="/transactions" class="nav-link" aria-label="출입금내역 페이지로 이동">출입금내역</router-link>
+          <router-link to="/recurring" class="nav-link" aria-label="고정 지출 목록 페이지로 이동">고정 지출 목록</router-link>
+        </div>
+        <ThemeToggle />
       </div>
     </nav>
 
@@ -48,6 +51,11 @@ import { ref } from 'vue'
 import BaseModal from './components/ui/BaseModal.vue'
 import TransactionForm from './components/domain/TransactionForm.vue'
 import ToastContainer from './components/ui/ToastContainer.vue'
+import ThemeToggle from './components/ui/ThemeToggle.vue'
+import { useTheme } from './composables/useTheme'
+
+// 테마 초기화
+useTheme()
 
 const isModalOpen = ref(false)
 
@@ -79,6 +87,12 @@ const handleTransactionSubmit = (data: any) => {
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -0.02em;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .nav-links {

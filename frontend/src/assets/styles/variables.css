@@ -134,31 +134,31 @@
   --account-other: #6b7280;      /* Gray - 기타 */
 }
 
-/* Dark Mode Support (Future proofing) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f172a;
-    /* Slate 900 */
-    --surface: #1e293b;
-    /* Slate 800 - Lighter than bg for cards */
-    --surface-glass: rgba(30, 41, 59, 0.9);
+/* Dark Mode Support */
+:root.dark {
+  --background: #0f172a;
+  /* Slate 900 */
+  --surface: #1e293b;
+  /* Slate 800 - Lighter than bg for cards */
+  --surface-glass: rgba(30, 41, 59, 0.9);
 
-    --text-main: #f8fafc;
-    /* Slate 50 - High contrast */
-    --text-muted: #cbd5e1;
-    /* Slate 300 - Better readability than 400 */
-    --text-light: #94a3b8;
-    /* Slate 400 */
+  --text-main: #f8fafc;
+  /* Slate 50 - High contrast */
+  --text-muted: #cbd5e1;
+  /* Slate 300 - Better readability than 400 */
+  --text-light: #94a3b8;
+  /* Slate 400 */
 
-    --border: #334155;
-    /* Slate 700 */
-    --border-light: #1e293b;
-    /* Slate 800 */
+  --border: #334155;
+  /* Slate 700 */
+  --border-light: #1e293b;
+  /* Slate 800 */
 
-    --glass-bg: rgba(30, 41, 59, 0.85);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-  }
+  --glass-bg: rgba(30, 41, 59, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  --shadow-glow: 0 0 15px rgba(99, 102, 241, 0.5);
 }
