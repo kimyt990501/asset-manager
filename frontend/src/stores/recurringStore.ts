@@ -49,13 +49,16 @@ export const useRecurringStore = defineStore('recurring', () => {
 
   const deactivateRecurring = async (id: number) => {
     try {
+      console.log('Deactivating recurring with id:', id)
       await recurringAPI.deactivate(id)
       const item = recurringTransactions.value.find(r => r.id === id)
       if (item) {
         item.is_active = false
       }
     } catch (err: any) {
-      error.value = err.message || '정기 거래 비활성화에 실패했습니다'
+      console.error('Deactivate recurring error:', err)
+      console.error('Error response:', err.response?.data)
+      error.value = err.response?.data?.detail || err.message || '정기 거래 비활성화에 실패했습니다'
       throw err
     }
   }

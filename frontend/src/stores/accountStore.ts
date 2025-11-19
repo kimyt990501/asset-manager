@@ -54,7 +54,14 @@ export const useAccountStore = defineStore('account', () => {
     try {
       const response = await accountsAPI.create(accountData)
       accounts.value.push(response.data)
-      await fetchSummary()
+
+      // fetchSummary 실패는 무시 (생성 자체는 성공)
+      try {
+        await fetchSummary()
+      } catch (summaryErr) {
+        console.warn('Failed to refresh summary after create, but create was successful:', summaryErr)
+      }
+
       return response.data
     } catch (err: any) {
       error.value = err.message || '계좌 생성에 실패했습니다'
@@ -79,11 +86,22 @@ export const useAccountStore = defineStore('account', () => {
 
   const deleteAccount = async (id: number) => {
     try {
-      await accountsAPI.delete(id)
+      console.log('Deleting account with id:', id)
+      const response = await accountsAPI.delete(id)
+      console.log('Delete response:', response)
       accounts.value = accounts.value.filter(acc => acc.id !== id)
-      await fetchSummary()
+
+      // fetchSummary 실패는 무시 (삭제 자체는 성공)
+      try {
+        await fetchSummary()
+      } catch (summaryErr) {
+        console.warn('Failed to refresh summary after delete, but delete was successful:', summaryErr)
+      }
     } catch (err: any) {
-      error.value = err.message || '계좌 삭제에 실패했습니다'
+      console.error('Delete account error:', err)
+      console.error('Error response:', err.response?.data)
+      console.error('Error status:', err.response?.status)
+      error.value = err.response?.data?.detail || err.message || '계좌 삭제에 실패했습니다'
       throw err
     }
   }
