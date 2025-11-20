@@ -41,40 +41,68 @@ const formatCurrency = (value: number) => {
 <style scoped>
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
 }
 
 .summary-card {
+  background: var(--surface); /* Explicit White */
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: var(--transition-base);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  justify-content: space-between;
+  min-height: 160px;
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-dark);
 }
 
 .card-label {
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
 
 .card-value {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
-.text-primary { color: var(--primary); }
-.text-danger { color: var(--danger); }
-.text-success { color: var(--secondary); }
+.text-primary { 
+  color: var(--text-main);
+}
+
+.text-danger { 
+  color: var(--danger);
+}
+
+.text-success { 
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-hover) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
 .card-animate {
-  animation: slideUpFade 0.6s ease-out both;
+  animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 @keyframes slideUpFade {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(40px);
   }
   to {
     opacity: 1;

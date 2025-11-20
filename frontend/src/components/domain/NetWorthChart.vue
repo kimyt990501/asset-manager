@@ -68,27 +68,68 @@ const chartData = computed(() => ({
   ]
 }))
 
-const chartOptions = {
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
       display: false
+    },
+    tooltip: {
+      backgroundColor: 'rgba(24, 24, 27, 0.9)',
+      titleColor: '#fff',
+      bodyColor: '#fff',
+      padding: 12,
+      cornerRadius: 8,
+      displayColors: false
     }
   },
   scales: {
     y: {
+      beginAtZero: false,
       grid: {
-        color: getCSSVariable('--border-light')
+        color: 'rgba(0, 0, 0, 0.05)',
+        drawBorder: false
+      },
+      ticks: {
+        font: {
+          family: "'Inter', sans-serif",
+          size: 11
+        },
+        color: '#71717a'
       }
     },
     x: {
       grid: {
         display: false
+      },
+      ticks: {
+        font: {
+          family: "'Inter', sans-serif",
+          size: 11
+        },
+        color: '#71717a'
       }
     }
+  },
+  elements: {
+    line: {
+      tension: 0.4,
+      borderWidth: 3
+    },
+    point: {
+      radius: 4, /* Visible dots */
+      hoverRadius: 6,
+      backgroundColor: '#ffffff',
+      borderWidth: 2,
+      borderColor: '#6366f1' /* Accent color border */
+    }
+  },
+  interaction: {
+    intersect: false,
+    mode: 'index' as const
   }
-}
+}))
 </script>
 
 <style scoped>

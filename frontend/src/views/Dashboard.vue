@@ -128,14 +128,17 @@ const currentDate = computed(() => {
 .dashboard {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xl);
+  gap: var(--spacing-2xl);
+  animation: fadeIn 0.6s ease-out;
 }
 
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 .header-actions {
@@ -144,21 +147,26 @@ const currentDate = computed(() => {
 }
 
 .header-content h1 {
-  font-size: 2.25rem;
+  font-size: var(--font-display);
   font-weight: 800;
   color: var(--text-main);
-  letter-spacing: -0.03em;
-  margin-bottom: 0.25rem;
+  letter-spacing: var(--tracking-tighter);
+  margin-bottom: 0.5rem;
+  background: linear-gradient(180deg, var(--text-main) 0%, var(--text-muted) 150%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
   color: var(--text-muted);
   font-size: 1rem;
+  font-weight: 500;
 }
 
 .date-selector {
   padding: 0.5rem 1rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
   font-weight: 600;
   color: var(--text-main);
   display: flex;
@@ -166,23 +174,27 @@ const currentDate = computed(() => {
   gap: 0.5rem;
   cursor: pointer;
   transition: var(--transition-base);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 .date-selector:hover {
-  background: var(--surface);
+  background: var(--surface-hover);
+  border-color: var(--border-dark);
 }
 
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-  gap: var(--spacing-lg);
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: var(--spacing-xl);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
 }
 
 .card-title {
@@ -197,15 +209,20 @@ const currentDate = computed(() => {
   font-weight: 600;
   color: var(--primary);
   background: var(--primary-light);
-  padding: 0.25rem 0.75rem;
+  padding: 0.35rem 0.85rem;
   border-radius: var(--radius-full);
 }
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 768px) {
@@ -218,6 +235,9 @@ const currentDate = computed(() => {
   .charts-grid {
     grid-template-columns: 1fr;
   }
+  
+  .header-content h1 {
+    font-size: 2rem;
+  }
 }
 </style>
-

@@ -93,7 +93,7 @@ import Button from '@/components/ui/BaseButton.vue'
 const accountStore = useAccountStore()
 const recurringStore = useRecurringStore()
 const { accounts } = storeToRefs(accountStore)
-const { recurringTransactions, loading } = storeToRefs(recurringStore)
+const { recurringTransactions } = storeToRefs(recurringStore)
 const { isOpen: isModalOpen, open: openModal, close: closeModal } = useModal()
 const { success, error } = useNotification()
 const { formatCurrency } = useFormatter()
@@ -173,21 +173,28 @@ const handleDelete = async (id: number) => {
 <style scoped>
 .recurring-page {
   min-height: calc(100vh - 64px - 4rem);
+  animation: fadeIn 0.6s ease-out;
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 .page-header h1 {
   margin: 0;
+  font-size: var(--font-display);
+  font-weight: 800;
   color: var(--text-main);
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-tighter);
+  background: linear-gradient(180deg, var(--text-main) 0%, var(--text-muted) 150%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .recurring-list {
@@ -195,7 +202,7 @@ const handleDelete = async (id: number) => {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border);
 }
 
 .recurring-item {
@@ -204,7 +211,7 @@ const handleDelete = async (id: number) => {
   align-items: center;
   padding: var(--spacing-lg);
   border-bottom: 1px solid var(--border);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   position: relative;
 }
@@ -215,14 +222,14 @@ const handleDelete = async (id: number) => {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 4px;
   background: var(--primary);
   transform: scaleY(0);
   transition: transform 0.3s ease;
 }
 
 .recurring-item:hover {
-  background: var(--background);
+  background: var(--surface-hover);
   transform: translateX(4px);
 }
 
@@ -246,18 +253,20 @@ const handleDelete = async (id: number) => {
 }
 
 .recurring-category {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-main);
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 
 .recurring-frequency {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  background: var(--border-light);
+  font-size: 0.8rem;
+  color: var(--primary);
+  background: var(--primary-light);
   padding: 0.25rem 0.75rem;
   border-radius: var(--radius-full);
-  font-weight: 500;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .inactive-badge {
@@ -271,25 +280,29 @@ const handleDelete = async (id: number) => {
 
 .recurring-description {
   margin: var(--spacing-sm) 0;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
 }
 
 .recurring-schedule {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .recurring-actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-xl);
 }
 
 .recurring-amount {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .transaction-income {
@@ -304,16 +317,18 @@ const handleDelete = async (id: number) => {
   display: flex;
   gap: 0.5rem;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transform: translateX(10px);
+  transition: all 0.3s ease;
 }
 
 .recurring-item:hover .action-buttons {
   opacity: 1;
+  transform: translateX(0);
 }
 
 .action-btn {
-  padding: 0.4rem 0.8rem;
-  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-lg);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -327,21 +342,22 @@ const handleDelete = async (id: number) => {
   background: var(--primary-light);
   border-color: var(--primary);
   color: var(--primary);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 .delete-btn {
   background: transparent;
-  border-color: var(--danger);
+  border-color: var(--danger-light);
   color: var(--danger);
 }
 
 .delete-btn:hover {
   background: var(--danger);
   color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+  border-color: var(--danger);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 .empty-state {
@@ -350,7 +366,7 @@ const handleDelete = async (id: number) => {
   background: var(--surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border);
 }
 
 .empty-state p {
@@ -361,6 +377,11 @@ const handleDelete = async (id: number) => {
 
 .recurring-item-animate {
   animation: listItemSlide 0.4s ease-out both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes listItemSlide {

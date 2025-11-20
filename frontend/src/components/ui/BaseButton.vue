@@ -65,33 +65,57 @@ const handleClick = (event: MouseEvent) => {
 
 /* Variants */
 .base-btn--primary {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  background: var(--primary);
   color: white;
-  box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-sm);
 }
+
 .base-btn--primary:hover:not(:disabled) {
-  box-shadow: 0 6px 10px -1px rgba(99, 102, 241, 0.4);
+  background: var(--primary-hover);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Electric Variant for Call to Actions */
+.base-btn--primary.electric {
+  background: var(--accent);
+  background: var(--accent-gradient);
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.base-btn--primary.electric:hover:not(:disabled) {
+  filter: brightness(1.1);
+  box-shadow: var(--shadow-glow-primary), var(--shadow-md);
 }
 
 .base-btn--secondary {
-  background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-hover) 100%);
-  color: white;
-  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+  background: white;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
+
 .base-btn--secondary:hover:not(:disabled) {
-  box-shadow: 0 6px 10px -1px rgba(16, 185, 129, 0.4);
+  background: var(--surface-hover);
+  border-color: var(--border-dark);
+  color: var(--text-main);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .base-btn--danger {
-  background: linear-gradient(135deg, var(--danger) 0%, var(--danger-hover) 100%);
+  background: var(--danger);
   color: white;
-  box-shadow: 0 4px 6px -1px rgba(244, 63, 94, 0.3);
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-sm);
 }
+
 .base-btn--danger:hover:not(:disabled) {
-  box-shadow: 0 6px 10px -1px rgba(244, 63, 94, 0.4);
+  background: var(--danger-hover);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-glow-danger);
 }
 
 .base-btn--ghost {

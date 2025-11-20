@@ -16,20 +16,21 @@ body {
   color: var(--text-main);
   line-height: 1.6;
   font-size: 16px;
-}
-
-#app {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
 }
 
-/* Glassmorphism Utility */
+/* Mesh Gradient Removed for Professional Mode */
+/* body::before {
+  content: none;
+} */
+
+/* Glassmorphism Utility - Simplified for Professional Mode */
 .glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Scrollbar Styling */

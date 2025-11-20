@@ -1,12 +1,21 @@
 :root {
-  /* Premium Color Palette */
-  /* Primary: Indigo */
-  --primary: #6366f1;
+  /* Modern Trendy Color Palette (Linear/Bento Style) */
+  /* Primary: Zinc/Slate Neutrals */
+  --primary: #18181b;
+  /* Zinc 900 - Deep Black/Grey */
+  --primary-hover: #27272a;
+  /* Zinc 800 */
+  --primary-light: #f4f4f5;
+  /* Zinc 100 */
+
+  /* Accent: Electric Violet/Blue - The "Pop" */
+  --accent: #6366f1;
   /* Indigo 500 */
-  --primary-hover: #4f46e5;
+  --accent-hover: #4f46e5;
   /* Indigo 600 */
-  --primary-light: #e0e7ff;
-  /* Indigo 100 */
+  --accent-light: #e0e7ff;
+  /* Indigo 50 */
+  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
 
   /* Secondary: Emerald (Success) */
   --secondary: #10b981;
@@ -14,7 +23,7 @@
   --secondary-hover: #059669;
   /* Emerald 600 */
   --secondary-light: #d1fae5;
-  /* Emerald 100 */
+  /* Emerald 50 */
 
   /* Danger: Rose */
   --danger: #f43f5e;
@@ -22,44 +31,46 @@
   --danger-hover: #e11d48;
   /* Rose 600 */
   --danger-light: #ffe4e6;
-  /* Rose 100 */
+  /* Rose 50 */
 
   /* Warning: Amber */
   --warning: #f59e0b;
   /* Amber 500 */
   --warning-light: #fef3c7;
-  /* Amber 100 */
+  /* Amber 50 */
   --warning-dark: #b45309;
   /* Amber 700 */
 
-  /* Info: Blue */
-  --info: #3b82f6;
-  /* Blue 500 */
-  --info-light: #dbeafe;
-  /* Blue 100 */
-  --info-dark: #1e40af;
-  /* Blue 700 */
+  /* Info: Sky */
+  --info: #0ea5e9;
+  /* Sky 500 */
+  --info-light: #e0f2fe;
+  /* Sky 50 */
+  --info-dark: #0369a1;
+  /* Sky 700 */
 
-  /* Neutrals: Slate */
-  --background: #f8fafc;
-  /* Slate 50 - Clean, bright background */
+  /* Neutrals & Backgrounds */
+  --background: #f4f4f5;
+  /* Zinc 100 - Soft Grey Background */
   --surface: #ffffff;
-  --surface-glass: rgba(255, 255, 255, 0.9);
-  /* More opaque for better readability */
+  --surface-hover: #fafafa;
+  /* Zinc 50 */
 
-  --text-main: #0f172a;
-  /* Slate 900 - High contrast */
-  --text-muted: #64748b;
-  /* Slate 500 */
-  --text-light: #94a3b8;
-  /* Slate 400 */
+  --text-main: #18181b;
+  /* Zinc 900 */
+  --text-muted: #71717a;
+  /* Zinc 500 */
+  --text-light: #a1a1aa;
+  /* Zinc 400 */
 
-  --border: #e2e8f0;
-  /* Slate 200 */
-  --border-light: #f1f5f9;
-  /* Slate 100 */
+  --border: #e4e4e7;
+  /* Zinc 200 */
+  --border-light: #f4f4f5;
+  /* Zinc 100 */
+  --border-dark: #d4d4d8;
+  /* Zinc 300 */
 
-  /* Spacing */
+  /* Spacing - Standard but breathable */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -67,42 +78,48 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
 
-  /* Radius */
+  /* Radius - Modern "Squircle" feel */
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
+  --radius-xl: 1.25rem;
+  /* Bento Card Radius */
   --radius-full: 9999px;
 
-  /* Shadows (Premium Multi-layered) */
+  /* Modern Shadows - Soft, Diffused, High-end */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-glow: 0 0 15px rgba(99, 102, 241, 0.3);
-  /* Softer glow */
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+
+  /* Glows - Very subtle, used sparingly */
+  --shadow-glow-primary: 0 0 20px rgba(99, 102, 241, 0.15);
+  --shadow-glow-success: 0 0 20px rgba(16, 185, 129, 0.15);
+  --shadow-glow-danger: 0 0 20px rgba(244, 63, 94, 0.15);
 
   /* Transitions */
   --transition-fast: all 0.15s ease;
   --transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-  /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  /* Increased opacity */
-  --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-blur: 16px;
-  /* Increased blur */
+  /* Glassmorphism - Micro-glass (Subtle) */
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-blur: 12px;
+  --glass-shadow: var(--shadow-sm);
 
   /* Typography Scale */
-  --font-xs: 0.75rem;    /* 12px */
-  --font-sm: 0.875rem;   /* 14px */
-  --font-base: 1rem;     /* 16px */
-  --font-lg: 1.125rem;   /* 18px */
-  --font-xl: 1.25rem;    /* 20px */
-  --font-2xl: 1.5rem;    /* 24px */
-  --font-3xl: 1.875rem;  /* 30px */
-  --font-4xl: 2.25rem;   /* 36px */
+  --font-xs: 0.75rem;
+  --font-sm: 0.875rem;
+  --font-base: 1rem;
+  --font-lg: 1.125rem;
+  --font-xl: 1.25rem;
+  --font-2xl: 1.5rem;
+  --font-3xl: 1.875rem;
+  --font-4xl: 2.25rem;
+  --font-display: 3rem;
+  /* New Display Size */
 
   /* Font Weights */
   --font-normal: 400;
@@ -111,10 +128,9 @@
   --font-bold: 700;
   --font-extrabold: 800;
 
-  /* Line Heights */
-  --leading-tight: 1.25;
-  --leading-normal: 1.5;
-  --leading-relaxed: 1.75;
+  /* Tracking (Letter Spacing) */
+  --tracking-tight: -0.025em;
+  --tracking-tighter: -0.04em;
 
   /* Z-Index Scale */
   --z-base: 1;
@@ -125,40 +141,51 @@
   --z-toast: 60;
   --z-tooltip: 70;
 
-  /* Account Type Colors */
-  --account-checking: #3b82f6;   /* Blue - 입출금 */
-  --account-savings: #10b981;    /* Green - 저축 */
-  --account-investment: #8b5cf6; /* Purple - 투자 */
-  --account-credit: #f59e0b;     /* Amber - 신용카드 */
-  --account-loan: #ef4444;       /* Red - 대출 */
-  --account-other: #6b7280;      /* Gray - 기타 */
+  /* Account Type Colors - Vibrant but controlled */
+  --account-checking: #0ea5e9;
+  /* Sky 500 */
+  --account-savings: #10b981;
+  /* Emerald 500 */
+  --account-investment: #8b5cf6;
+  /* Violet 500 */
+  --account-credit: #f59e0b;
+  /* Amber 500 */
+  --account-loan: #f43f5e;
+  /* Rose 500 */
+  --account-other: #71717a;
+  /* Zinc 500 */
 }
 
 /* Dark Mode Support */
 :root.dark {
-  --background: #0f172a;
-  /* Slate 900 */
-  --surface: #1e293b;
-  /* Slate 800 - Lighter than bg for cards */
-  --surface-glass: rgba(30, 41, 59, 0.9);
+  --background: #09090b;
+  /* Zinc 950 */
+  --surface: #18181b;
+  /* Zinc 900 - Slightly lighter than BG */
+  --surface-hover: #27272a;
+  /* Zinc 800 */
 
-  --text-main: #f8fafc;
-  /* Slate 50 - High contrast */
-  --text-muted: #cbd5e1;
-  /* Slate 300 - Better readability than 400 */
-  --text-light: #94a3b8;
-  /* Slate 400 */
+  --text-main: #f4f4f5;
+  /* Zinc 100 */
+  --text-muted: #a1a1aa;
+  /* Zinc 400 */
+  --text-light: #71717a;
+  /* Zinc 500 */
 
-  --border: #334155;
-  /* Slate 700 */
-  --border-light: #1e293b;
-  /* Slate 800 */
+  --border: #27272a;
+  /* Zinc 800 - Visible border */
+  --border-light: #18181b;
+  /* Zinc 900 */
+  --border-dark: #3f3f46;
+  /* Zinc 700 */
 
-  --glass-bg: rgba(30, 41, 59, 0.85);
+  --glass-bg: rgba(24, 24, 27, 0.8);
+  /* Dark Glass */
   --glass-border: rgba(255, 255, 255, 0.1);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-  --shadow-glow: 0 0 15px rgba(99, 102, 241, 0.5);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+
+  --shadow-glow-primary: 0 0 20px rgba(99, 102, 241, 0.25);
 }

@@ -175,20 +175,27 @@ const handleTransactionClick = (transaction: Transaction) => {
 <style scoped>
 .transactions-page {
   min-height: calc(100vh - 64px - 4rem);
+  animation: fadeIn 0.6s ease-out;
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 .page-header h1 {
+  font-size: var(--font-display);
+  font-weight: 800;
   color: var(--text-main);
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-tighter);
+  background: linear-gradient(180deg, var(--text-main) 0%, var(--text-muted) 150%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .filters {
@@ -196,31 +203,38 @@ const handleTransactionClick = (transaction: Transaction) => {
   padding: var(--spacing-lg);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  margin-bottom: var(--spacing-lg);
-  border: 1px solid var(--border-light);
+  margin-bottom: var(--spacing-xl);
+  border: 1px solid var(--border);
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
 }
 
 .filter-group label {
   font-weight: 600;
-  color: var(--text-main);
-  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .filter-group select {
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  font-size: 1rem;
+  font-size: 0.95rem;
   max-width: 300px;
   background-color: var(--surface);
   color: var(--text-main);
   transition: var(--transition-base);
+  cursor: pointer;
+}
+
+.filter-group select:hover {
+  border-color: var(--primary);
 }
 
 .filter-group select:focus {
@@ -233,7 +247,8 @@ const handleTransactionClick = (transaction: Transaction) => {
   background: var(--surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border);
+  overflow: hidden;
 }
 
 .transactions-list {
@@ -246,7 +261,7 @@ const handleTransactionClick = (transaction: Transaction) => {
   background: var(--surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border);
 }
 
 .empty-state p {
@@ -257,6 +272,11 @@ const handleTransactionClick = (transaction: Transaction) => {
 
 .transaction-item-animate {
   animation: listItemSlide 0.4s ease-out both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes listItemSlide {
@@ -275,6 +295,10 @@ const handleTransactionClick = (transaction: Transaction) => {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-md);
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
   }
 
   .filter-group select {
