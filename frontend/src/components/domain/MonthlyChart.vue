@@ -39,7 +39,7 @@ const chartData = computed(() => ({
         getCSSVariable('--secondary'),      // 수입: 초록
         getCSSVariable('--danger'),         // 고정지출: 빨강
         getCSSVariable('--warning'),        // 변동지출: 주황
-        getCSSVariable('--primary')         // 저축액: 파랑
+        '#6366f1'                           // 저축액: Indigo (Visible in Dark Mode)
       ],
       data: [
         props.income,
