@@ -90,7 +90,7 @@ const handleClick = (event: MouseEvent) => {
 }
 
 .base-btn--secondary {
-  background: white;
+  background: var(--surface);
   color: var(--text-main);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);

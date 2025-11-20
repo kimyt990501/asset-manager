@@ -19,8 +19,8 @@ export const FREQUENCY_LABELS: Record<string, string> = {
 }
 
 export const CATEGORIES = {
-  income: ['급여', '부수입', '이자', '배당', '기타수입'],
-  expense: ['식비', '교통비', '문화생활', '쇼핑', '통신비', '청년도약', 'ETF', 'CMA', '기타지출']
+  income: ['급여', '부수입', '이자', '배당', '입금', '기타수입'],
+  expense: ['식비', '교통비', '문화생활', '쇼핑', '통신비', '청년도약', 'ETF', 'CMA', '보험', '기타지출']
 }
 
 export const ACCOUNT_TYPE_COLORS: Record<string, string> = {

@@ -96,25 +96,27 @@
         취소
       </Button>
       <Button variant="primary" type="submit" :loading="loading">
-        추가
+        {{ isEditMode ? '수정' : '추가' }}
       </Button>
     </div>
   </form>
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
-import type { Account, RecurringFormData } from '../../types'
+import { reactive, computed, watch } from 'vue'
+import type { Account, RecurringFormData, RecurringTransaction } from '../../types'
 import { CATEGORIES } from '../../utils/constants'
 import Button from '../ui/BaseButton.vue'
 
 interface Props {
   accounts: Account[]
   loading?: boolean
+  initialData?: RecurringTransaction | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  loading: false
+  loading: false,
+  initialData: null
 })
 
 const emit = defineEmits<{
@@ -135,9 +137,47 @@ const formData = reactive<RecurringFormData>({
   is_active: true
 })
 
+// initialData가 변경될 때 formData 업데이트
+watch(() => props.initialData, (newData) => {
+  if (newData) {
+    formData.account_id = newData.account_id
+    formData.type = newData.type
+    formData.category = newData.category
+    formData.amount = newData.amount
+    formData.description = newData.description || ''
+    formData.frequency = newData.frequency
+    formData.day_of_month = newData.day_of_month || 1
+    formData.start_date = newData.start_date
+    formData.end_date = newData.end_date || undefined
+    formData.is_active = newData.is_active ?? true
+  } else {
+    // 초기화
+    formData.account_id = 0
+    formData.type = 'expense'
+    formData.category = ''
+    formData.amount = 0
+    formData.description = ''
+    formData.frequency = 'monthly'
+    formData.day_of_month = 1
+    formData.start_date = new Date().toISOString().split('T')[0]
+    formData.end_date = undefined
+    formData.is_active = true
+  }
+}, { immediate: true })
+
+// type 변경 시 카테고리 자동 선택
+watch(() => formData.type, (newType) => {
+  const categories = newType === 'income' ? CATEGORIES.income : CATEGORIES.expense
+  if (!categories.includes(formData.category)) {
+    formData.category = categories[0]
+  }
+})
+
 const availableCategories = computed(() => {
   return formData.type === 'income' ? CATEGORIES.income : CATEGORIES.expense
 })
+
+const isEditMode = computed(() => props.initialData !== null)
 
 const handleSubmit = () => {
   if (formData.account_id === 0) {

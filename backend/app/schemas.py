@@ -86,9 +86,16 @@ class RecurringTransactionCreate(RecurringTransactionBase):
     is_active: bool = True
 
 class RecurringTransactionUpdate(BaseModel):
+    account_id: Optional[int] = None
+    type: Optional[TransactionType] = None
+    category: Optional[str] = None
     amount: Optional[Decimal] = None
-    is_active: Optional[bool] = None
+    description: Optional[str] = None
+    frequency: Optional[Frequency] = None
+    day_of_month: Optional[int] = None
+    start_date: Optional[date] = None
     end_date: Optional[date] = None
+    is_active: Optional[bool] = None
 
 class RecurringTransaction(RecurringTransactionBase):
     id: int
