@@ -18,6 +18,36 @@
           </option>
         </select>
       </div>
+
+      <div class="filter-group">
+        <label for="start-date">시작 날짜</label>
+        <input
+          id="start-date"
+          type="date"
+          v-model="startDate"
+          @change="handleFilterChange"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label for="end-date">종료 날짜</label>
+        <input
+          id="end-date"
+          type="date"
+          v-model="endDate"
+          @change="handleFilterChange"
+        />
+      </div>
+
+      <Button
+        v-if="startDate || endDate"
+        variant="ghost"
+        size="sm"
+        @click="clearDateFilters"
+        class="clear-filter-btn"
+      >
+        날짜 필터 초기화
+      </Button>
     </div>
 
     <div v-if="loading && transactions.length === 0" class="transactions-skeleton">
@@ -96,6 +126,8 @@ const { success, error } = useNotification()
 
 const formLoading = ref(false)
 const selectedAccountId = ref<number | undefined>(undefined)
+const startDate = ref<string>('')
+const endDate = ref<string>('')
 const editingTransaction = ref<Transaction | null>(null)
 
 onMounted(async () => {
@@ -106,7 +138,18 @@ onMounted(async () => {
 })
 
 const handleFilterChange = async () => {
-  await transactionStore.fetchTransactions(selectedAccountId.value)
+  await transactionStore.fetchTransactions(
+    selectedAccountId.value,
+    100,
+    startDate.value || undefined,
+    endDate.value || undefined
+  )
+}
+
+const clearDateFilters = async () => {
+  startDate.value = ''
+  endDate.value = ''
+  await handleFilterChange()
 }
 
 const openCreateModal = () => {
@@ -199,6 +242,10 @@ const handleTransactionClick = (transaction: Transaction) => {
 }
 
 .filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+  align-items: flex-end;
   background: var(--surface);
   padding: var(--spacing-lg);
   border-radius: var(--radius-lg);
@@ -211,6 +258,7 @@ const handleTransactionClick = (transaction: Transaction) => {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
+  flex: 0 1 auto;
 }
 
 .filter-group label {
@@ -221,26 +269,34 @@ const handleTransactionClick = (transaction: Transaction) => {
   letter-spacing: 0.02em;
 }
 
-.filter-group select {
+.filter-group select,
+.filter-group input[type="date"] {
   padding: 0.75rem 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   font-size: 0.95rem;
-  max-width: 300px;
+  min-width: 200px;
   background-color: var(--surface);
   color: var(--text-main);
   transition: var(--transition-base);
   cursor: pointer;
 }
 
-.filter-group select:hover {
+.filter-group select:hover,
+.filter-group input[type="date"]:hover {
   border-color: var(--primary);
 }
 
-.filter-group select:focus {
+.filter-group select:focus,
+.filter-group input[type="date"]:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.clear-filter-btn {
+  align-self: flex-end;
+  white-space: nowrap;
 }
 
 .transactions-container {

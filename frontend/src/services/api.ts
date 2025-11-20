@@ -30,9 +30,11 @@ export const accountsAPI = {
 
 // Transactions API
 export const transactionsAPI = {
-  getAll: (accountId?: number, limit = 100) => {
+  getAll: (accountId?: number, limit = 100, startDate?: string, endDate?: string) => {
     const params: Record<string, any> = { limit }
     if (accountId) params.account_id = accountId
+    if (startDate) params.start_date = startDate
+    if (endDate) params.end_date = endDate
     return api.get<Transaction[]>('/transactions/', { params })
   },
   create: (data: TransactionFormData) => api.post<Transaction>('/transactions/', data),

@@ -14,8 +14,8 @@ class TransactionService:
         self.transaction_repo = TransactionRepository(db)
         self.account_repo = AccountRepository(db)
     
-    def get_transactions(self, account_id: Optional[int] = None, limit: int = 100) -> List[schemas.Transaction]:
-        transactions = self.transaction_repo.get_all(account_id, limit)
+    def get_transactions(self, account_id: Optional[int] = None, limit: int = 100, start_date: Optional[date] = None, end_date: Optional[date] = None) -> List[schemas.Transaction]:
+        transactions = self.transaction_repo.get_all(account_id, limit, start_date, end_date)
         return [schemas.Transaction.model_validate(tx) for tx in transactions]
     
     def create_transaction(self, transaction: schemas.TransactionCreate) -> schemas.Transaction:

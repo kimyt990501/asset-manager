@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
+from datetime import date
 from app import schemas
 from app.api.deps import get_db
 from app.services.transaction_service import TransactionService
@@ -11,12 +12,14 @@ router = APIRouter()
 @router.get("/", response_model=List[schemas.Transaction])
 def get_transactions(
     account_id: Optional[int] = Query(None, description="필터링할 계좌 ID"),
+    start_date: Optional[date] = Query(None, description="시작 날짜 (YYYY-MM-DD)"),
+    end_date: Optional[date] = Query(None, description="종료 날짜 (YYYY-MM-DD)"),
     limit: int = Query(100, ge=1, le=1000, description="조회할 최대 거래 수"),
     db: Session = Depends(get_db)
 ):
     """거래 내역 조회"""
     service = TransactionService(db)
-    return service.get_transactions(account_id, limit)
+    return service.get_transactions(account_id, limit, start_date, end_date)
 
 @router.post("/", response_model=schemas.Transaction, status_code=status.HTTP_201_CREATED)
 def create_transaction(

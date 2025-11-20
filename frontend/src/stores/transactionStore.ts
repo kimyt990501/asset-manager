@@ -12,11 +12,11 @@ export const useTransactionStore = defineStore('transaction', () => {
 
   const accountStore = useAccountStore()
 
-  const fetchTransactions = async (accountId?: number, limit = 100) => {
+  const fetchTransactions = async (accountId?: number, limit = 100, startDate?: string, endDate?: string) => {
     loading.value = true
     error.value = null
     try {
-      const response = await transactionsAPI.getAll(accountId, limit)
+      const response = await transactionsAPI.getAll(accountId, limit, startDate, endDate)
       transactions.value = response.data
     } catch (err: any) {
       error.value = err.message || '거래 내역을 불러오는데 실패했습니다'

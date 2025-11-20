@@ -7,10 +7,14 @@ class TransactionRepository:
     def __init__(self, db: Session):
         self.db = db
     
-    def get_all(self, account_id: Optional[int] = None, limit: int = 100) -> List[models.Transaction]:
+    def get_all(self, account_id: Optional[int] = None, limit: int = 100, start_date: Optional[date] = None, end_date: Optional[date] = None) -> List[models.Transaction]:
         query = self.db.query(models.Transaction)
         if account_id:
             query = query.filter(models.Transaction.account_id == account_id)
+        if start_date:
+            query = query.filter(models.Transaction.transaction_date >= start_date)
+        if end_date:
+            query = query.filter(models.Transaction.transaction_date <= end_date)
         return query.order_by(models.Transaction.transaction_date.desc()).limit(limit).all()
     
     def get_by_id(self, transaction_id: int) -> Optional[models.Transaction]:
